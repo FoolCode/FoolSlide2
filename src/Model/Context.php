@@ -39,6 +39,10 @@ class Context implements ContextInterface
         require_once __DIR__.'/../../assets/packages/stringparser-bbcode/library/stringparser_bbcode.class.php';
 
         $context->getContainer()
+            ->register('foolslide.series_factory', 'Foolz\Foolslide\Model\SeriesFactory')
+            ->addArgument($context);
+
+        $context->getContainer()
             ->register('foolslide.radix_collection', 'Foolz\Foolslide\Model\RadixCollection')
             ->addArgument($context);
 
@@ -140,7 +144,7 @@ class Context implements ContextInterface
 
         $route_collection->add('foolslide.root', new Route(
             '/',
-            ['_controller' => '\Foolz\Foolslide\Controller\Chan::index']
+            ['_controller' => '\Foolz\Foolslide\Controller\Reader::index']
         ));
 
         $route_collection->add('404', new Route(
@@ -200,7 +204,7 @@ class Context implements ContextInterface
             ]
         ));
 
-        foreach(['boards', 'moderation'] as $location) {
+        foreach(['reader', 'boards', 'moderation'] as $location) {
             $route_collection->add(
                 'foolslide.admin.'.$location, new Route(
                     '/admin/'.$location.'/{_suffix}',

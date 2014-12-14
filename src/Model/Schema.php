@@ -19,6 +19,30 @@ class Schema
 
         $schema = $sm->getCodedSchema();
 
+        $series = $schema->createTable($dc->p('series'));
+        $series->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+        $series->addColumn('rls_id', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $series->addColumn('title', 'string', ['length' => 256]);
+        $series->addColumn('synopsis', 'text', ['length' => 65532]);
+        $series->setPrimaryKey(['id']);
+        $series->addUniqueIndex(['rls_id'], 'rls_id_index');
+
+        $releases = $schema->createTable($dc->p('releases'));
+        $releases->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+        $releases->addColumn('rls_id', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $releases->addColumn('series', 'integer', ['unsigned' => true]);
+        $releases->addColumn('volume', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $releases->addColumn('volume_part', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $releases->addColumn('chapter', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $releases->addColumn('chapter_part', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $releases->addColumn('extra', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $releases->addColumn('language', 'integer', ['unsigned' => true]);
+        $releases->addColumn('title', 'string', ['length' => 256]);
+        $releases->addColumn('created', 'datetime', ['notnull' => false, 'default' => null]);
+        $releases->addColumn('updated', 'datetime', ['notnull' => false, 'default' => null]);
+        $releases->setPrimaryKey(['id']);
+        $releases->addUniqueIndex(['rls_id'], 'rls_id_index');
+
         $banned_md5 = $schema->createTable($dc->p('banned_md5'));
         $banned_md5->addColumn('md5', 'string', ['length' => 24]);
         $banned_md5->setPrimaryKey(['md5']);

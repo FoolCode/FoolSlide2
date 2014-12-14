@@ -2,11 +2,39 @@
 
 return [
     'sidebar' => [
+        'reader' => [
+            'name' => _i('Reader'),
+            'level' => 'admin',
+            'default' => 'manage',
+            'content' => [
+                'manage' => [
+                    'alt_highlight' => ['board'],
+                    'level' => 'admin',
+                    'name' => _i('Manage'),
+                    'icon' => 'icon-th-list'
+                ],
+                'add_series' => [
+                    'level' => 'admin',
+                    'name' => _i('Add Series'),
+                    'icon' => 'icon-th-list'
+                ],
+                'preferences' => [
+                    'level' => 'admin',
+                    'name' => _i('Preferences'),
+                    'icon' => 'icon-check'
+                ]
+            ]
+        ],
         'boards' => [
             'name' => _i('Boards'),
             'level' => 'admin',
             'default' => 'manage',
             'content' => [
+                'add_series' => [
+                    'level' => 'admin',
+                    'name' => _i('Add Series'),
+                    'icon' => 'icon-th-list'
+                ],
                 'manage' => [
                     'alt_highlight' => ['board'],
                     'level' => 'admin',
