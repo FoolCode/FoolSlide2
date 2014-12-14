@@ -1,11 +1,11 @@
 <?php
 
-namespace Foolz\Foolfuuka\Plugins\BoardStatistics\Console;
+namespace Foolz\Foolslide\Plugins\BoardStatistics\Console;
 
 use Foolz\Foolframe\Model\Context;
 use Foolz\Foolframe\Model\DoctrineConnection;
-use Foolz\Foolfuuka\Model\RadixCollection;
-use Foolz\Foolfuuka\Plugins\BoardStatistics\Model\BoardStatistics as BS;
+use Foolz\Foolslide\Model\RadixCollection;
+use Foolz\Foolslide\Plugins\BoardStatistics\Model\BoardStatistics as BS;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,8 +38,8 @@ class Console extends Command
     {
         $this->context = $context;
         $this->dc = $context->getService('doctrine');
-        $this->radix_coll = $context->getService('foolfuuka.radix_collection');
-        $this->board_stats = $context->getService('foolfuuka-plugin.board_statistics');
+        $this->radix_coll = $context->getService('foolslide.radix_collection');
+        $this->board_stats = $context->getService('foolslide-plugin.board_statistics');
         parent::__construct();
     }
 

@@ -1,15 +1,15 @@
 <?php
 
-namespace Foolz\Foolfuuka\Controller\Chan;
+namespace Foolz\Foolslide\Controller\Chan;
 
 use Foolz\Foolframe\Model\Plugins;
 use Foolz\Foolframe\Model\Uri;
-use Foolz\Foolfuuka\Plugins\BoardStatistics\Model\BoardStatistics as BS;
+use Foolz\Foolslide\Plugins\BoardStatistics\Model\BoardStatistics as BS;
 use Foolz\Plugin\Plugin;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class BoardStatistics extends \Foolz\Foolfuuka\Controller\Chan
+class BoardStatistics extends \Foolz\Foolslide\Controller\Chan
 {
     /**
      * @var Plugin
@@ -30,10 +30,10 @@ class BoardStatistics extends \Foolz\Foolfuuka\Controller\Chan
     {
         /** @var Plugins $plugins */
         $plugins = $this->getContext()->getService('plugins');
-        $this->board_stats = $this->getContext()->getService('foolfuuka-plugin.board_statistics');
+        $this->board_stats = $this->getContext()->getService('foolslide-plugin.board_statistics');
         $this->uri = $this->getContext()->getService('uri');
 
-        $this->plugin = $plugins->getPlugin('foolz/foolfuuka-plugin-board-statistics');
+        $this->plugin = $plugins->getPlugin('foolz/foolslide-plugin-board-statistics');
 
         parent::before();
     }

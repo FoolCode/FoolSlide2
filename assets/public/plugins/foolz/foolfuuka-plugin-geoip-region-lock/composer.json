@@ -1,6 +1,6 @@
 {
-	"name": "foolz/foolfuuka-plugin-geoip-region-lock",
-	"type": "foolz-foolfuuka-plugin",
+	"name": "foolz/foolslide-plugin-geoip-region-lock",
+	"type": "foolz-foolslide-plugin",
 	"description": "Allow or disallow nations to reach the board or post comments. Requires the GeoIP PECL module.",
 	"version": "1.0.0",
 	"keywords": ["fake", "mock"],
@@ -20,6 +20,6 @@
 		"name": "GeoIP Region Lock",
 		"slug": "geoip_region_lock",
 		"identifier": "fu",
-		"module": "foolfuuka"
+		"module": "foolslide"
 	}
 }

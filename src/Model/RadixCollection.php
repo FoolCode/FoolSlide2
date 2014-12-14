@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Cache\Cache;
 use Foolz\Foolframe\Model\Config;
@@ -52,7 +52,7 @@ class RadixCollection extends Model
     /**
      * The structure of the radix table to be used with validation and form creator
      *
-     * @param  \Foolz\Foolfuuka\Model\Radix|null  $radix  If available insert to customize the structure
+     * @param  \Foolz\Foolslide\Model\Radix|null  $radix  If available insert to customize the structure
      *
      * @return  array  The structure
      */
@@ -432,7 +432,7 @@ class RadixCollection extends Model
             ],
         ];
 
-        $structure = \Foolz\Plugin\Hook::forge('Foolz\Foolfuuka\Model\Radix::structure.result')
+        $structure = \Foolz\Plugin\Hook::forge('Foolz\Foolslide\Model\Radix::structure.result')
             ->setParam('structure', $structure)
             ->execute()
             ->get($structure);
@@ -448,7 +448,7 @@ class RadixCollection extends Model
         ]);
 
         foreach ($structure as $key => $item) {
-            $default = $this->config->get('foolz/foolfuuka', 'package', 'preferences.radix.'.$key);
+            $default = $this->config->get('foolz/foolslide', 'package', 'preferences.radix.'.$key);
 
             if ($default !== null) {
                 $structure[$key]['default_value'] = $default;
@@ -459,7 +459,7 @@ class RadixCollection extends Model
             foreach ($subs as $inv) {
                 if (isset($item[$inv])) {
                     foreach ($item[$inv] as $k => $i) {
-                        $default = $this->config->get('foolz/foolfuuka', 'package', 'preferences.radix.'.$k);
+                        $default = $this->config->get('foolz/foolslide', 'package', 'preferences.radix.'.$k);
 
                         if (!is_null($default)) {
                             $structure[$key][$inv][$k]['default_value'] = $default;
@@ -477,8 +477,8 @@ class RadixCollection extends Model
      */
     public function clearCache()
     {
-        Cache::item('foolfuuka.model.radix.preload')->delete();
-        Cache::item('foolfuuka.model.radix.load_preferences')->delete();
+        Cache::item('foolslide.model.radix.preload')->delete();
+        Cache::item('foolslide.model.radix.load_preferences')->delete();
     }
 
     /**
@@ -607,7 +607,7 @@ class RadixCollection extends Model
     /**
      * Insert custom preferences. One must use this for 'internal' preferences
      *
-     * @param  \Foolz\Foolfuuka\Model\Radix|int  $board_id  can also be the board object
+     * @param  \Foolz\Foolslide\Model\Radix|int  $board_id  can also be the board object
      * @param  string  $name   The name of the value to insert
      * @param  mixed   $value  The value to insert
      */
@@ -665,12 +665,12 @@ class RadixCollection extends Model
         $array = [];
 
         // get all directories
-        if ($handle = opendir($this->preferences->get('foolfuuka.boards.directory'))) {
+        if ($handle = opendir($this->preferences->get('foolslide.boards.directory'))) {
             while (false !== ($file = readdir($handle))) {
                 if (in_array($file, ['..', '.']))
                     continue;
 
-                if (is_dir($this->preferences->get('foolfuuka.boards.directory').'/'.$file)) {
+                if (is_dir($this->preferences->get('foolslide.boards.directory').'/'.$file)) {
                     $array[] = $file;
                 }
             }
@@ -694,7 +694,7 @@ class RadixCollection extends Model
 
         // exec the deletion
         foreach ($array as $dir) {
-            $cmd = 'rm -Rv '.$this->preferences->get('foolfuuka.boards.directory').'/'.$dir;
+            $cmd = 'rm -Rv '.$this->preferences->get('foolslide.boards.directory').'/'.$dir;
             if ($echo) {
                 echo $cmd.PHP_EOL;
                 passthru($cmd);
@@ -715,7 +715,7 @@ class RadixCollection extends Model
         $this->profiler->log('Radix::preload Start');
 
         try {
-            $result = Cache::item('foolfuuka.model.radix.preload')->get();
+            $result = Cache::item('foolslide.model.radix.preload')->get();
         } catch (\OutOfBoundsException $e) {
             $result = $this->dc->qb()
                 ->select('*')
@@ -724,7 +724,7 @@ class RadixCollection extends Model
                 ->execute()
                 ->fetchAll();
 
-            Cache::item('foolfuuka.model.radix.preload')->set($result, 900);
+            Cache::item('foolslide.model.radix.preload')->set($result, 900);
         }
 
         if (!is_array($result) || empty($result)) {
@@ -759,14 +759,14 @@ class RadixCollection extends Model
             // load the basic value of the preferences
             foreach ($structure as $key => $arr) {
                 if (!isset($result_object[$item['id']]->$key) && isset($arr['boards_preferences'])) {
-                    $result_object[$item['id']]->setValue($key, $this->config->get('foolz/foolfuuka', 'package', 'preferences.radix.'.$key, false));
+                    $result_object[$item['id']]->setValue($key, $this->config->get('foolz/foolslide', 'package', 'preferences.radix.'.$key, false));
                 }
 
                 foreach (['sub', 'sub_inverse'] as $sub) {
                     if (isset($arr[$sub])) {
                         foreach ($arr[$sub] as $k => $a) {
                             if (!isset($result_object[$item['id']]->$k) && isset($a['boards_preferences'])) {
-                                $result_object[$item['id']]->setValue($k, $this->config->get('foolz/foolfuuka', 'package', 'preferences.radix.'.$k, false));
+                                $result_object[$item['id']]->setValue($k, $this->config->get('foolz/foolslide', 'package', 'preferences.radix.'.$k, false));
                             }
                         }
                     }
@@ -777,7 +777,7 @@ class RadixCollection extends Model
         // load the preferences from the board_preferences table
         $this->profiler->log('Radix::load_preferences Start');
         try {
-            $preferences = Cache::item('foolfuuka.model.radix.load_preferences')->get();
+            $preferences = Cache::item('foolslide.model.radix.load_preferences')->get();
         } catch (\OutOfBoundsException $e) {
             $preferences = $this->dc->qb()
                 ->select('*')
@@ -785,7 +785,7 @@ class RadixCollection extends Model
                 ->execute()
                 ->fetchAll();
 
-            Cache::item('foolfuuka.model.radix.load_preferences')->set($preferences, 900);
+            Cache::item('foolslide.model.radix.load_preferences')->set($preferences, 900);
         }
 
         foreach ($preferences as $value) {
@@ -801,7 +801,7 @@ class RadixCollection extends Model
 
         // take them all and then filter/do whatever (we use this to split the boards through various subdomains)
         // only public is affected! admins and mods will see all boards at all the time
-        $this->preloaded_radixes = \Foolz\Plugin\Hook::forge('Foolz\Foolfuuka\Model\Radix::preload.result.public')
+        $this->preloaded_radixes = \Foolz\Plugin\Hook::forge('Foolz\Foolslide\Model\Radix::preload.result.public')
             ->setObject($this)
             ->setParam('preloaded_radixes', $this->preloaded_radixes)
             ->execute()
@@ -814,7 +814,7 @@ class RadixCollection extends Model
     /**
      * Returns all the radixes as array of objects
      *
-     * @return  \Foolz\Foolfuuka\Model\Radix[]  the objects of the preloaded radixes
+     * @return  \Foolz\Foolslide\Model\Radix[]  the objects of the preloaded radixes
      */
     public function getAll()
     {
@@ -831,7 +831,7 @@ class RadixCollection extends Model
      *
      * @param   int  $radix_id  the ID of the board
      *
-     * @return  \Foolz\Foolfuuka\Model\Radix  false on failure, else the board object
+     * @return  \Foolz\Foolslide\Model\Radix  false on failure, else the board object
      */
     public function getById($radix_id)
     {
@@ -852,7 +852,7 @@ class RadixCollection extends Model
      * @param  string   $type    the variable name on which to match
      * @param  boolean  $switch  true if it must be equal or false if not equal
      *
-     * @return  \Foolz\Foolfuuka\Model\Radix  false if not found or the board object
+     * @return  \Foolz\Foolslide\Model\Radix  false if not found or the board object
      */
     public function getByType($value, $type, $switch = true)
     {
@@ -873,7 +873,7 @@ class RadixCollection extends Model
      *
      * @param  string  $shortname  The shortname of the board
      *
-     * @return  \Foolz\Foolfuuka\Model\Radix  the board with the shortname, false if not found
+     * @return  \Foolz\Foolslide\Model\Radix  the board with the shortname, false if not found
      */
     public function getByShortname($shortname)
     {
@@ -887,7 +887,7 @@ class RadixCollection extends Model
      * @param  string   $type    the variable name
      * @param  boolean  $switch  the value to match
      *
-     * @return  \Foolz\Foolfuuka\Model\Radix[]  the Radix objects
+     * @return  \Foolz\Foolslide\Model\Radix[]  the Radix objects
      */
     public function filterByType($type, $switch)
     {
@@ -905,7 +905,7 @@ class RadixCollection extends Model
     /**
      * Returns an array of objects that are archives
      *
-     * @return  \Foolz\Foolfuuka\Model\Radix[]  the board objects that are archives
+     * @return  \Foolz\Foolslide\Model\Radix[]  the board objects that are archives
      */
     public function getArchives()
     {
@@ -916,7 +916,7 @@ class RadixCollection extends Model
     /**
      * Returns an array of objects that are boards (not archives)
      *
-     * @return  \Foolz\Foolfuuka\Model\Radix[]  the board objects that are boards
+     * @return  \Foolz\Foolslide\Model\Radix[]  the board objects that are boards
      */
     public function getBoards()
     {

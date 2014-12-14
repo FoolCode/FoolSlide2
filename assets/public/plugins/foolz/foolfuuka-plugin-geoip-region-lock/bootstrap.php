@@ -3,7 +3,7 @@
 use Foolz\Foolframe\Model\Auth;
 use Foolz\Foolframe\Model\Autoloader;
 use Foolz\Foolframe\Model\Context;
-use Foolz\Foolfuuka\Plugins\GeoipRegionLock\Model\GeoipRegionLock;
+use Foolz\Foolslide\Plugins\GeoipRegionLock\Model\GeoipRegionLock;
 use Foolz\Plugin\Event;
 use Foolz\Plugin\Result;
 
@@ -11,7 +11,7 @@ class HHVM_GeoIpBlock
 {
     public function run()
     {
-        Event::forge('Foolz\Plugin\Plugin::execute.foolz/foolfuuka-plugin-geoip-region-lock')
+        Event::forge('Foolz\Plugin\Plugin::execute.foolz/foolslide-plugin-geoip-region-lock')
             ->setCall(function(Result $result) {
                 /* @var $context Context */
                 $context = $result->getParam('context');
@@ -20,7 +20,7 @@ class HHVM_GeoIpBlock
 
                 $autoloader->addClassMap([
                     'Foolz\Foolframe\Controller\Admin\Plugins\GeoipRegionLock' => __DIR__.'/classes/controller/admin.php',
-                    'Foolz\Foolfuuka\Plugins\GeoipRegionLock\Model\GeoipRegionLock' =>__DIR__.'/classes/model/geoip_region_lock.php'
+                    'Foolz\Foolslide\Plugins\GeoipRegionLock\Model\GeoipRegionLock' =>__DIR__.'/classes/model/geoip_region_lock.php'
                 ]);
 
                 Event::forge('Foolz\Foolframe\Model\Context.handleWeb.has_auth')
@@ -55,20 +55,20 @@ class HHVM_GeoIpBlock
                         $preferences = $context->getService('preferences');
 
                         $context->getContainer()
-                            ->register('foolfuuka-plugin.geoip_region_lock', 'Foolz\Foolfuuka\Plugins\GeoipRegionLock\Model\GeoipRegionLock')
+                            ->register('foolslide-plugin.geoip_region_lock', 'Foolz\Foolslide\Plugins\GeoipRegionLock\Model\GeoipRegionLock')
                             ->addArgument($context);
 
                         /** @var GeoipRegionLock $object */
-                        $object = $context->getService('foolfuuka-plugin.geoip_region_lock');
+                        $object = $context->getService('foolslide-plugin.geoip_region_lock');
 
-                        if (!$auth->hasAccess('maccess.mod') && !($preferences->get('foolfuuka.plugins.geoip_region_lock.allow_logged_in') && $auth->hasAccess('access.user'))) {
+                        if (!$auth->hasAccess('maccess.mod') && !($preferences->get('foolslide.plugins.geoip_region_lock.allow_logged_in') && $auth->hasAccess('access.user'))) {
                             Event::forge('Foolz\Foolframe\Model\Context.handleWeb.override_response')
                                 ->setCall(function(Result $result) use ($context, $object) {
                                     $object->blockCountryView($result);
                                 })
                                 ->setPriority(2);
 
-                            Event::forge('Foolz\Foolfuuka\Model\CommentInsert::insert.call.before.method')
+                            Event::forge('Foolz\Foolslide\Model\CommentInsert::insert.call.before.method')
                                 ->setCall(function(Result $result) use ($context, $object) {
                                     $object->blockCountryComment($result);
                                 })
@@ -78,7 +78,7 @@ class HHVM_GeoIpBlock
 
 
 
-                Event::forge('Foolz\Foolfuuka\Model\Radix::structure.result')
+                Event::forge('Foolz\Foolslide\Model\Radix::structure.result')
                     ->setCall(function(Result $result){
                         $structure = $result->getParam('structure');
 

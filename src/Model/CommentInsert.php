@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Cache\Cache;
 use Foolz\Inet\Inet;
@@ -368,7 +368,7 @@ class CommentInsert extends Comment
             }
         }
 
-        \Foolz\Plugin\Hook::forge('Foolz\Foolfuuka\Model\CommentInsert::insert.call.after.input_checks')
+        \Foolz\Plugin\Hook::forge('Foolz\Foolslide\Model\CommentInsert::insert.call.after.input_checks')
             ->setObject($this)
             ->execute();
 
@@ -480,7 +480,7 @@ class CommentInsert extends Comment
 
         $this->comment->timestamp = $this->getRadixTime($this->comment->timestamp);
 
-        \Foolz\Plugin\Hook::forge('Foolz\Foolfuuka\Model\CommentInsert::insert.call.before.sql')
+        \Foolz\Plugin\Hook::forge('Foolz\Foolslide\Model\CommentInsert::insert.call.before.sql')
             ->setObject($this)
             ->execute();
 
@@ -679,22 +679,22 @@ class CommentInsert extends Comment
             $this->dc->getConnection()->commit();
 
             // clean up some caches
-            Cache::item('foolfuuka.model.board.getThreadComments.thread.'
+            Cache::item('foolslide.model.board.getThreadComments.thread.'
                 .md5(serialize([$this->radix->shortname, $this->comment->thread_num])))->delete();
 
             // clean up the 10 first pages of index and gallery that are cached
             for ($i = 1; $i <= 10; $i++) {
-                Cache::item('foolfuuka.model.board.getLatestComments.query.'
+                Cache::item('foolslide.model.board.getLatestComments.query.'
                     .$this->radix->shortname.'.by_post.'.$i)->delete();
 
-                Cache::item('foolfuuka.model.board.getLatestComments.query.'
+                Cache::item('foolslide.model.board.getLatestComments.query.'
                     .$this->radix->shortname.'.by_thread.'.$i)->delete();
 
-                Cache::item('foolfuuka.model.board.getThreadsComments.query.'
+                Cache::item('foolslide.model.board.getThreadsComments.query.'
                     .$this->radix->shortname.'.'.$i)->delete();
             }
         } catch (\Doctrine\DBAL\DBALException $e) {
-            $this->logger->error('\Foolz\Foolfuuka\Model\CommentInsert: '.$e->getMessage());
+            $this->logger->error('\Foolz\Foolslide\Model\CommentInsert: '.$e->getMessage());
             $this->dc->getConnection()->rollBack();
 
             throw new CommentSendingDatabaseException(_i('Something went wrong when inserting the post in the database. Try again.'));

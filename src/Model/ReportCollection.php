@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Cache\Cache;
 use Foolz\Foolframe\Model\DoctrineConnection;
@@ -51,9 +51,9 @@ class ReportCollection extends Model
 
         $this->dc = $context->getService('doctrine');
         $this->uri = $context->getService('uri');
-        $this->radix_coll = $context->getService('foolfuuka.radix_collection');
-        $this->media_factory = $context->getService('foolfuuka.media_factory');
-        $this->ban_factory = $context->getService('foolfuuka.ban_factory');
+        $this->radix_coll = $context->getService('foolslide.radix_collection');
+        $this->media_factory = $context->getService('foolslide.media_factory');
+        $this->ban_factory = $context->getService('foolslide.ban_factory');
 
         $this->preload();
     }
@@ -62,7 +62,7 @@ class ReportCollection extends Model
      * Creates a Report object from an associative array
      *
      * @param   array  $array  An associative array
-     * @return  \Foolz\Foolfuuka\Model\Report
+     * @return  \Foolz\Foolslide\Model\Report
      */
     public function fromArray(array $array)
     {
@@ -107,7 +107,7 @@ class ReportCollection extends Model
         }
 
         try {
-            $this->preloaded = Cache::item('foolfuuka.model.report.preload.preloaded')->get();
+            $this->preloaded = Cache::item('foolslide.model.report.preload.preloaded')->get();
         } catch (\OutOfBoundsException $e) {
             $this->preloaded = $this->dc->qb()
                 ->select('*')
@@ -115,7 +115,7 @@ class ReportCollection extends Model
                 ->execute()
                 ->fetchAll();
 
-            Cache::item('foolfuuka.model.report.preload.preloaded')->set($this->preloaded, 1800);
+            Cache::item('foolslide.model.report.preload.preloaded')->set($this->preloaded, 1800);
         }
     }
 
@@ -125,16 +125,16 @@ class ReportCollection extends Model
     public function p_clearCache()
     {
         $this->preloaded = null;
-        Cache::item('foolfuuka.model.report.preload.preloaded')->delete();
+        Cache::item('foolslide.model.report.preload.preloaded')->delete();
     }
 
     /**
      * Returns an array of Reports by a comment's doc_id
      *
-     * @param   \Foolz\Foolfuuka\Model\Radix  $board  The Radix on which the Comment resides
+     * @param   \Foolz\Foolslide\Model\Radix  $board  The Radix on which the Comment resides
      * @param   int  $doc_id  The doc_id of the Comment
      *
-     * @return  array  An array of \Foolz\Foolfuuka\Model\Report
+     * @return  array  An array of \Foolz\Foolslide\Model\Report
      */
     public function getByDocId($radix, $doc_id)
     {
@@ -153,10 +153,10 @@ class ReportCollection extends Model
     /**
      * Returns an array of Reports by a Media's media_id
      *
-     * @param   \Foolz\Foolfuuka\Model\Radix  $board  The Radix on which the Comment resides
+     * @param   \Foolz\Foolslide\Model\Radix  $board  The Radix on which the Comment resides
      * @param   int  $media_id  The media_id of the Media
      *
-     * @return  array  An array of \Foolz\Foolfuuka\Model\Report
+     * @return  array  An array of \Foolz\Foolslide\Model\Report
      */
     public function getByMediaId($radix, $media_id)
     {
@@ -199,13 +199,13 @@ class ReportCollection extends Model
     /**
      * Adds a new report to the database
      *
-     * @param   \Foolz\Foolfuuka\Model\Radix  $radix  The Radix to which the Report is referred to
+     * @param   \Foolz\Foolslide\Model\Radix  $radix  The Radix to which the Report is referred to
      * @param   int     $id           The ID of the object being reported (doc_id or media_id)
      * @param   string  $reason       The reason for the report
      * @param   string  $ip_reporter  The IP in decimal format
      * @param   string  $mode         The type of column (doc_id or media_id)
      *
-     * @return  \Foolz\Foolfuuka\Model\Report   The created report
+     * @return  \Foolz\Foolslide\Model\Report   The created report
      * @throws  ReportMediaNotFoundException    If the reported media_id doesn't exist
      * @throws  ReportCommentNotFoundException  If the reported doc_id doesn't exist
      * @throws  ReportReasonTooLongException    If the reason inserted was too long
@@ -336,7 +336,7 @@ class ReportCollection extends Model
      *
      * @param   int  $id  The ID of the Report
      *
-     * @throws  \Foolz\Foolfuuka\Model\ReportNotFoundException
+     * @throws  \Foolz\Foolslide\Model\ReportNotFoundException
      */
     public function p_delete($id)
     {

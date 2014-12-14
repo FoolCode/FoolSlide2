@@ -1,22 +1,22 @@
 <?php
 
-namespace Foolz\Foolfuuka\Controller\Api;
+namespace Foolz\Foolslide\Controller\Api;
 
 use Foolz\Foolframe\Controller\Common;
 use Foolz\Foolframe\Model\Config;
 use Foolz\Foolframe\Model\Preferences;
 use Foolz\Foolframe\Model\Uri;
-use Foolz\Foolfuuka\Model\BanFactory;
-use Foolz\Foolfuuka\Model\Board;
-use Foolz\Foolfuuka\Model\Comment;
-use Foolz\Foolfuuka\Model\CommentBulk;
-use Foolz\Foolfuuka\Model\CommentFactory;
-use Foolz\Foolfuuka\Model\Media;
-use Foolz\Foolfuuka\Model\MediaFactory;
-use Foolz\Foolfuuka\Model\Radix;
-use Foolz\Foolfuuka\Model\RadixCollection;
-use Foolz\Foolfuuka\Model\ReportCollection;
-use Foolz\Foolfuuka\Model\Search;
+use Foolz\Foolslide\Model\BanFactory;
+use Foolz\Foolslide\Model\Board;
+use Foolz\Foolslide\Model\Comment;
+use Foolz\Foolslide\Model\CommentBulk;
+use Foolz\Foolslide\Model\CommentFactory;
+use Foolz\Foolslide\Model\Media;
+use Foolz\Foolslide\Model\MediaFactory;
+use Foolz\Foolslide\Model\Radix;
+use Foolz\Foolslide\Model\RadixCollection;
+use Foolz\Foolslide\Model\ReportCollection;
+use Foolz\Foolslide\Model\Search;
 use Foolz\Inet\Inet;
 use Foolz\Profiler\Profiler;
 use Foolz\Theme\Builder;
@@ -113,25 +113,25 @@ class Chan extends Common
         $this->preferences = $this->getContext()->getService('preferences');
         $this->uri = $this->getContext()->getService('uri');
         $this->profiler = $this->getContext()->getService('profiler');
-        $this->radix_coll = $this->getContext()->getService('foolfuuka.radix_collection');
-        $this->media_factory = $this->getContext()->getService('foolfuuka.media_factory');
-        $this->comment_factory = $this->getContext()->getService('foolfuuka.comment_factory');
-        $this->ban_factory = $this->getContext()->getService('foolfuuka.ban_factory');
-        $this->report_coll = $this->getContext()->getService('foolfuuka.report_collection');
+        $this->radix_coll = $this->getContext()->getService('foolslide.radix_collection');
+        $this->media_factory = $this->getContext()->getService('foolslide.media_factory');
+        $this->comment_factory = $this->getContext()->getService('foolslide.comment_factory');
+        $this->ban_factory = $this->getContext()->getService('foolslide.ban_factory');
+        $this->report_coll = $this->getContext()->getService('foolslide.report_collection');
 
-        // this has already been forged in the foolfuuka bootstrap
-        $theme_instance = \Foolz\Theme\Loader::forge('foolfuuka');
+        // this has already been forged in the foolslide bootstrap
+        $theme_instance = \Foolz\Theme\Loader::forge('foolslide');
 
         if ($this->getQuery('theme')) {
             try {
-                $theme_name = $this->getQuery('theme', $this->getCookie('theme')) ? : $this->preferences->get('foolfuuka.theme.default');
+                $theme_name = $this->getQuery('theme', $this->getCookie('theme')) ? : $this->preferences->get('foolslide.theme.default');
                 $theme = $theme_instance->get($theme_name);
                 if (!isset($theme->enabled) || !$theme->enabled) {
                     throw new \OutOfBoundsException;
                 }
                 $this->theme = $theme;
             } catch (\OutOfBoundsException $e) {
-                $theme_name = 'foolz/foolfuuka-theme-foolfuuka';
+                $theme_name = 'foolz/foolslide-theme-foolslide';
                 $this->theme = $theme_instance->get($theme_name);
             }
 
@@ -300,9 +300,9 @@ class Chan extends Common
             }
 
             $this->response->setData($board->getComments());
-        } catch (\Foolz\Foolfuuka\Model\BoardThreadNotFoundException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardThreadNotFoundException $e) {
             return $this->response->setData(['error' => _i('Thread not found.')]);
-        } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardException $e) {
             return $this->response->setData(['error' => _i('Encountered an unknown error.')])->setStatusCode(500);
         }
 
@@ -362,9 +362,9 @@ class Chan extends Common
             $comments = $board->getComments();
 
             $this->response->setData($comments);
-        } catch (\Foolz\Foolfuuka\Model\SearchException $e) {
+        } catch (\Foolz\Foolslide\Model\SearchException $e) {
             return $this->response->setData(['error' => $e->getMessage()]);
-        } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardException $e) {
             return $this->response->setData(['error' => $e->getMessage()])->setStatusCode(500);
         }
 
@@ -448,9 +448,9 @@ class Chan extends Common
                     $this->response->setData($board->getComments());
                 }
             }
-        } catch (\Foolz\Foolfuuka\Model\BoardThreadNotFoundException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardThreadNotFoundException $e) {
             return $this->response->setData(['error' => _i('Thread not found.')]);
-        } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardException $e) {
             return $this->response->setData(['error' => _i('Encountered an unknown error.')])->setStatusCode(500);
         }
 
@@ -489,9 +489,9 @@ class Chan extends Common
             if (!$this->response->isNotModified($this->request)) {
                 $this->response->setData($comment);
             }
-        } catch (\Foolz\Foolfuuka\Model\BoardPostNotFoundException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardPostNotFoundException $e) {
             return $this->response->setData(['error' => _i('Post not found.')]);
-        } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardException $e) {
             return $this->response->setData(['error' => $e->getMessage()])->setStatusCode(500);
         }
 
@@ -516,7 +516,7 @@ class Chan extends Common
                     $this->getPost('reason'),
                     Inet::ptod($this->getRequest()->getClientIp())
                 );
-            } catch (\Foolz\Foolfuuka\Model\ReportException $e) {
+            } catch (\Foolz\Foolslide\Model\ReportException $e) {
                 return $this->response->setData(['error' => $e->getMessage()]);
             }
 
@@ -527,7 +527,7 @@ class Chan extends Common
         if ($this->getPost('action') === 'report_media') {
             try {
                 $this->report_coll->add($this->radix, $this->getPost('media_id'), $this->getPost('reason'), null, 'media_id');
-            } catch (\Foolz\Foolfuuka\Model\ReportException $e) {
+            } catch (\Foolz\Foolslide\Model\ReportException $e) {
                 return $this->response->setData(['error' => $e->getMessage()]);
             }
 
@@ -547,9 +547,9 @@ class Chan extends Common
                 $comment = current($comments);
                 $comment = new Comment($this->getContext(), $comment);
                 $comment->delete($this->getPost('password'));
-            } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+            } catch (\Foolz\Foolslide\Model\BoardException $e) {
                 return $this->response->setData(['error' => $e->getMessage()]);
-            } catch (\Foolz\Foolfuuka\Model\CommentDeleteWrongPassException $e) {
+            } catch (\Foolz\Foolslide\Model\CommentDeleteWrongPassException $e) {
                 return $this->response->setData(['error' => $e->getMessage()]);
             }
 
@@ -574,7 +574,7 @@ class Chan extends Common
         if ($this->getPost('action') === 'delete_report') {
             try {
                 $this->report_coll->delete($this->getPost('id'));
-            } catch (\Foolz\Foolfuuka\Model\ReportException $e) {
+            } catch (\Foolz\Foolslide\Model\ReportException $e) {
                 return $this->response->setData(['error' => $e->getMessage()])->setStatusCode(404);
             }
 
@@ -592,7 +592,7 @@ class Chan extends Common
                 $comment = current($comments);
                 $comment = new Comment($this->getContext(), $comment);
                 $comment->delete();
-            } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+            } catch (\Foolz\Foolslide\Model\BoardException $e) {
                 return $this->response->setData(['error' => $e->getMessage()])->setStatusCode(404);
             }
 
@@ -604,7 +604,7 @@ class Chan extends Common
                 $media = $this->media_factory->getByMediaId($this->radix, $this->getPost('id'));
                 $media = new Media($this->getContext(), CommentBulk::forge($this->radix, null, $media));
                 $media->delete(true, true, true);
-            } catch (\Foolz\Foolfuuka\Model\MediaNotFoundException $e) {
+            } catch (\Foolz\Foolslide\Model\MediaNotFoundException $e) {
                 return $this->response->setData(['error' => $e->getMessage()])->setStatusCode(404);
             }
 
@@ -621,7 +621,7 @@ class Chan extends Common
                 $media = $this->media_factory->getByMediaId($this->radix, $this->getPost('id'));
                 $media = new Media($this->getContext(), CommentBulk::forge($this->radix, null, $media));
                 $media->ban($global);
-            } catch (\Foolz\Foolfuuka\Model\MediaNotFoundException $e) {
+            } catch (\Foolz\Foolslide\Model\MediaNotFoundException $e) {
                 return $this->response->setData(['error' => $e->getMessage()])->setStatusCode(404);
             }
 
@@ -635,7 +635,7 @@ class Chan extends Common
                     $this->getPost('length'),
                     $this->getPost('board_ban') === 'global' ? array() : array($this->radix->id)
                 );
-            } catch (\Foolz\Foolfuuka\Model\BanException $e) {
+            } catch (\Foolz\Foolslide\Model\BanException $e) {
                 return $this->response->setData(['error' => $e->getMessage()])->setStatusCode(404);
             }
 

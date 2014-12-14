@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Foolframe\Model\DoctrineConnection;
 use Foolz\Foolframe\Model\Model;
@@ -22,7 +22,7 @@ class BanFactory extends Model
         parent::__construct($context);
 
         $this->dc = $context->getService('doctrine');
-        $this->radix_coll = $context->getService('foolfuuka.radix_collection');
+        $this->radix_coll = $context->getService('foolslide.radix_collection');
     }
 
     /**
@@ -30,7 +30,7 @@ class BanFactory extends Model
      *
      * @param   array  $array  The array from database
      *
-     * @return  \Foolz\Foolfuuka\Model\Ban
+     * @return  \Foolz\Foolslide\Model\Ban
      */
     public function fromArray($array)
     {
@@ -48,7 +48,7 @@ class BanFactory extends Model
      *
      * @param   array  $array  The array from database
      *
-     * @return  array  An array of \Foolz\Foolfuuka\Model\Ban with as key the board_id
+     * @return  array  An array of \Foolz\Foolslide\Model\Ban with as key the board_id
      */
     public function fromArrayDeep($array)
     {
@@ -67,7 +67,7 @@ class BanFactory extends Model
      * Get the object the user was banned for by ID
      *
      * @param   int  $id  The Ban id
-     * @return  \Foolz\Foolfuuka\Model\Ban
+     * @return  \Foolz\Foolslide\Model\Ban
      * @throws  BanNotFoundException
      */
     public function getById($id)
@@ -120,7 +120,7 @@ class BanFactory extends Model
      * @param   int     $page      The page to fetch
      * @param   int     $per_page  The number of entries per page
      *
-     * @return  array  An array of \Foolz\Foolfuuka\Model\Ban
+     * @return  array  An array of \Foolz\Foolslide\Model\Ban
      */
     public function getPagedBy($order_by, $order, $page, $per_page = 30)
     {
@@ -144,7 +144,7 @@ class BanFactory extends Model
      * @param   int     $page      The page to fetch
      * @param   int     $per_page  The number of entries per page
      *
-     * @return  array  An array of \Foolz\Foolfuuka\Model\Ban
+     * @return  array  An array of \Foolz\Foolslide\Model\Ban
      */
     public function getAppealsPagedBy($order_by, $order, $page, $per_page = 30)
     {
@@ -168,7 +168,7 @@ class BanFactory extends Model
      * @param   string  $decimal_ip
      * @param   array   $board
      *
-     * @return  \Foolz\Foolfuuka\Model\Ban|boolean
+     * @return  \Foolz\Foolslide\Model\Ban|boolean
      */
     public function isBanned($decimal_ip, $board)
     {
@@ -204,8 +204,8 @@ class BanFactory extends Model
      * @param   int     $length      The length of the ban in seconds
      * @param   array   $board_ids   The array of board IDs, global ban if left empty
      *
-     * @return  \Foolz\Foolfuuka\Model\Ban
-     * @throws  \Foolz\Foolfuuka\Model\BanException
+     * @return  \Foolz\Foolslide\Model\Ban
+     * @throws  \Foolz\Foolslide\Model\BanException
      */
     public function add($ip_decimal, $reason, $length, $board_ids = [])
     {

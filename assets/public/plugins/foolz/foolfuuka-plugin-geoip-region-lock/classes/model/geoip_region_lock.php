@@ -1,11 +1,11 @@
 <?php
 
-namespace Foolz\Foolfuuka\Plugins\GeoipRegionLock\Model;
+namespace Foolz\Foolslide\Plugins\GeoipRegionLock\Model;
 
 use Foolz\Foolframe\Model\Context;
 use Foolz\Foolframe\Model\Model;
-use Foolz\Foolfuuka\Model\Comment;
-use Foolz\Foolfuuka\Model\CommentSendingException;
+use Foolz\Foolslide\Model\Comment;
+use Foolz\Foolslide\Model\CommentSendingException;
 use Foolz\Inet\Inet;
 use Foolz\Plugin\Result;
 use GeoIp2\Database\Reader;
@@ -28,8 +28,8 @@ class GeoipRegionLock extends Model
         $obj = $result->getObject();
 
         // globally allowed and disallowed
-        $allow = $this->preferences->get('foolfuuka.plugins.geoip_region_lock.allow_comment');
-        $disallow = $this->preferences->get('foolfuuka.plugins.geoip_region_lock.disallow_comment');
+        $allow = $this->preferences->get('foolslide.plugins.geoip_region_lock.allow_comment');
+        $disallow = $this->preferences->get('foolslide.plugins.geoip_region_lock.disallow_comment');
 
         $board_allow = trim($obj->radix->getValue('plugin_geo_ip_region_lock_allow_comment'), " ,");
         $board_disallow = trim($obj->radix->getValue('plugin_geo_ip_region_lock_disallow_comment'), " ,");
@@ -83,8 +83,8 @@ class GeoipRegionLock extends Model
     {
         $result->getParam('request');
 
-        $allow = $this->preferences->get('foolfuuka.plugins.geoip_region_lock.allow_view');
-        $disallow = $this->preferences->get('foolfuuka.plugins.geoip_region_lock.disallow_view');
+        $allow = $this->preferences->get('foolslide.plugins.geoip_region_lock.allow_view');
+        $disallow = $this->preferences->get('foolslide.plugins.geoip_region_lock.disallow_view');
 
         if ($allow || $disallow) {
             $country = strtolower(\geoip_country_code_by_name($request->getClientIp()));

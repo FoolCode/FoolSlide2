@@ -1,10 +1,10 @@
 <?php
 
-use Foolz\Foolfuuka\Model\Comment;
+use Foolz\Foolslide\Model\Comment;
 
 \Foolz\Plugin\Event::forge('Foolz\Plugin\Plugin::execute.foolz/patch_sopa_spoilers_2012')
     ->setCall(function($result) {
-        $event = new \Foolz\Plugin\Event('Foolz\Foolfuuka\Model\Comment.processComment.call.before');
+        $event = new \Foolz\Plugin\Event('Foolz\Foolslide\Model\Comment.processComment.call.before');
         $event->setCall(function($result) {
             return;
             /** @var Comment $post */

@@ -1,6 +1,6 @@
 {
-	"name": "foolz/foolfuuka-plugin-dice-roll",
-	"type": "foolz-foolfuuka-plugin",
+	"name": "foolz/foolslide-plugin-dice-roll",
+	"type": "foolz-foolslide-plugin",
 	"description": "Adds support for dice rolling on certain boards.",
 	"version": "1.0.0",
 	"keywords": ["fake", "mock"],
@@ -19,6 +19,6 @@
 	"extra": {
 		"name": "Dice Roll",
 		"slug": "dice_roll",
-		"module": "foolfuuka"
+		"module": "foolslide"
 	}
 }

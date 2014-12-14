@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Foolframe\Model\Model;
 use Foolz\Plugin\Hook;
@@ -24,7 +24,7 @@ class MediaFactory extends Model
      *
      * @param  Radix $radix  The Radix the Media will refer to
      *
-     * @return \Foolz\Foolfuuka\Model\Media  An empty Media object, with all the values unset
+     * @return \Foolz\Foolslide\Model\Media  An empty Media object, with all the values unset
      */
     public function forgeEmpty(Radix $radix)
     {
@@ -40,7 +40,7 @@ class MediaFactory extends Model
      * @param  string                        $value  The value searched for
      * @param  boolean                       $op     If the object is for an opening post
      *
-     * @return  \Foolz\Foolfuuka\Model\MediaData  The searched object
+     * @return  \Foolz\Foolslide\Model\MediaData  The searched object
      * @throws  MediaNotFoundException        If the media has not been found
      */
     protected function p_getBy(Radix $radix, $where, $value, $op = true)
@@ -68,7 +68,7 @@ class MediaFactory extends Model
      * @param  string                        $value  The media ID
      * @param  boolean                       $op     If the object is for an opening post
      *
-     * @return  \Foolz\Foolfuuka\Model\Media  The searched object
+     * @return  \Foolz\Foolslide\Model\Media  The searched object
      * @throws  MediaNotFoundException        If the media has not been found
      */
     protected function p_getByMediaId(Radix $radix, $value, $op = false)
@@ -83,7 +83,7 @@ class MediaFactory extends Model
      * @param  string                        $value  The media hash
      * @param  boolean                       $op     If the object is for an opening post
      *
-     * @return  \Foolz\Foolfuuka\Model\Media  The searched object
+     * @return  \Foolz\Foolslide\Model\Media  The searched object
      * @throws  MediaNotFoundException        If the media has not been found
      */
     protected function p_getByMediaHash(Radix $radix, $value, $op = false)
@@ -97,7 +97,7 @@ class MediaFactory extends Model
      * @param  Radix $radix  The Radix where the Media can be found
      * @param  string                        $value  The filename
      *
-     * @return  \Foolz\Foolfuuka\Model\MediaData  The searched object
+     * @return  \Foolz\Foolslide\Model\MediaData  The searched object
      * @throws  MediaNotFoundException        If the media has not been found
      */
     protected function p_getByFilename(Radix $radix, $filename)
@@ -125,14 +125,14 @@ class MediaFactory extends Model
      *
      * @param  Radix $radix  The Radix where this Media belongs
      *
-     * @return  \Foolz\Foolfuuka\Model\Media            A new Media object with the upload data
+     * @return  \Foolz\Foolslide\Model\Media            A new Media object with the upload data
      * @throws  MediaUploadNoFileException              If there's no file uploaded
      * @throws  MediaUploadMultipleNotAllowedException  If there's multiple uploads
      * @throws  MediaUploadInvalidException             If the file format is not allowed
      */
     protected function p_forgeFromUpload(Request $request, Radix $radix)
     {
-        $config = Hook::forge('Foolz\Foolfuuka\Model\Media::upload.config')
+        $config = Hook::forge('Foolz\Foolslide\Model\Media::upload.config')
             ->setParams([
                 'ext_whitelist' => ['jpg', 'jpeg', 'gif', 'png'],
                 'mime_whitelist' => ['image/jpeg', 'image/png', 'image/gif']
@@ -159,7 +159,7 @@ class MediaFactory extends Model
 
                 if ($file->getError() === UPLOAD_ERR_INI_SIZE) {
                     throw new MediaUploadInvalidException(
-                        _i('The server is misconfigured: the FoolFuuka upload size should be lower than PHP\'s upload limit.'));
+                        _i('The server is misconfigured: the Foolslide upload size should be lower than PHP\'s upload limit.'));
                 }
 
                 if ($file->getError() === UPLOAD_ERR_PARTIAL) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Foolframe\Model\Config;
 use Foolz\Foolframe\Model\DoctrineConnection;
@@ -90,9 +90,9 @@ class Radix extends Model
             ->execute();
 
         // rename the directory and prevent directory collision
-        $base = $this->preferences->get('foolfuuka.boards.directory').'/'.$this->shortname;
+        $base = $this->preferences->get('foolslide.boards.directory').'/'.$this->shortname;
         if (file_exists($base)) {
-            $rename_to = $this->preferences->get('foolfuuka.boards.directory')
+            $rename_to = $this->preferences->get('foolslide.boards.directory')
                 .'/'.$this->shortname.'_removed_'.str_replace('.', '', (string) microtime(true));
 
             rename($base, $rename_to);
@@ -150,11 +150,11 @@ class Radix extends Model
     public function getPrefix()
     {
         // if the value really doesn't exist in the db
-        if ($this->preferences->get('foolfuuka.boards.prefix', null, true) === null) {
+        if ($this->preferences->get('foolslide.boards.prefix', null, true) === null) {
             return $this->dc->getPrefix() . 'board_';
         }
 
-        return $this->preferences->get('foolfuuka.boards.prefix');
+        return $this->preferences->get('foolslide.boards.prefix');
     }
 
     /**
@@ -166,8 +166,8 @@ class Radix extends Model
      */
     public function getTable($suffix = '')
     {
-        if ($this->preferences->get('foolfuuka.boards.db')) {
-            return $this->dc->getConnection()->quoteIdentifier($this->preferences->get('foolfuuka.boards.db'))
+        if ($this->preferences->get('foolslide.boards.db')) {
+            return $this->dc->getConnection()->quoteIdentifier($this->preferences->get('foolslide.boards.db'))
             . '.' . $this->dc->getConnection()->quoteIdentifier($this->getPrefix() . $this->shortname . $suffix);
         } else {
             return $this->dc->getConnection()->quoteIdentifier($this->getPrefix() . $this->shortname . $suffix);
@@ -197,8 +197,8 @@ class Radix extends Model
     public function createTables()
     {
         $config = $this->config->get('foolz/foolframe', 'db', 'default');
-        $config['dbname'] = $this->preferences->get('foolfuuka.boards.db') ?: $config['dbname'];
-        $config['prefix'] = $this->preferences->get("foolfuuka.boards.prefix");
+        $config['dbname'] = $this->preferences->get('foolslide.boards.db') ?: $config['dbname'];
+        $config['prefix'] = $this->preferences->get("foolslide.boards.prefix");
         $conn = new DoctrineConnection($this->getContext(), $config);
 
         $charset = 'utf8mb4';

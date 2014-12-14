@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Foolframe\Model\DoctrineConnection;
 use Foolz\Foolframe\Model\Model;
@@ -118,14 +118,14 @@ class Report extends Model
     /**
      * The Radix object
      *
-     * @var  \Foolz\Foolfuuka\Model\Radix|null
+     * @var  \Foolz\Foolslide\Model\Radix|null
      */
     public $radix = null;
 
     /**
      * The Comment object
      *
-     * @var  \Foolz\Foolfuuka\Model\Comment|null
+     * @var  \Foolz\Foolslide\Model\Comment|null
      */
     public $comment = null;
 
@@ -149,8 +149,8 @@ class Report extends Model
         parent::__construct($context);
 
         $this->dc = $context->getService('doctrine');
-        $this->radix_coll = $context->getService('foolfuuka.radix_collection');
-        $this->report_coll = $context->getService('foolfuuka.report_collection');
+        $this->radix_coll = $context->getService('foolslide.radix_collection');
+        $this->report_coll = $context->getService('foolslide.report_collection');
     }
 
     /**
@@ -166,9 +166,9 @@ class Report extends Model
     /**
      * Returns the Comment by doc_id or the first Comment found with a matching media_id
      *
-     * @return  null|\Foolz\Foolfuuka\Model\CommentBulk
-     * @throws  \Foolz\Foolfuuka\Model\ReportMediaNotFoundException
-     * @throws  \Foolz\Foolfuuka\Model\ReportCommentNotFoundException
+     * @return  null|\Foolz\Foolslide\Model\CommentBulk
+     * @throws  \Foolz\Foolslide\Model\ReportMediaNotFoundException
+     * @throws  \Foolz\Foolslide\Model\ReportCommentNotFoundException
      */
     public function p_getComment()
     {

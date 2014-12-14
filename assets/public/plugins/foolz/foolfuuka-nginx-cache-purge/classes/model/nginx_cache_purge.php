@@ -1,11 +1,11 @@
 <?php
 
-namespace Foolz\Foolfuuka\Plugins\NginxCachePurge\Model;
+namespace Foolz\Foolslide\Plugins\NginxCachePurge\Model;
 
 use Foolz\Foolframe\Model\Context;
 use Foolz\Foolframe\Model\Model;
 use Foolz\Foolframe\Model\Preferences;
-use Foolz\Foolfuuka\Model\Media;
+use Foolz\Foolslide\Model\Media;
 
 class NginxCachePurge extends Model
 {
@@ -30,7 +30,7 @@ class NginxCachePurge extends Model
         // purge full image
         try {
             $dir['full'] = $post->getDir(false, true, true);
-        } catch (\Foolz\Foolfuuka\Model\MediaException $e) {
+        } catch (\Foolz\Foolslide\Model\MediaException $e) {
 
         }
 
@@ -40,7 +40,7 @@ class NginxCachePurge extends Model
             $dir['thumb-0'] = $post->getDir(true, true, true);
             $post->op = 1;
             $dir['thumb-1'] = $post->getDir(true, true, true);
-        } catch (\Foolz\Foolfuuka\Model\MediaException $e) {
+        } catch (\Foolz\Foolslide\Model\MediaException $e) {
 
         }
 
@@ -77,7 +77,7 @@ class NginxCachePurge extends Model
 
     public function parseUrls()
     {
-        $text = $this->preferences->get('foolfuuka.plugins.nginx_cache_purge.urls');
+        $text = $this->preferences->get('foolslide.plugins.nginx_cache_purge.urls');
 
         if (!$text) {
             return [];

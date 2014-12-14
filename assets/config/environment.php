@@ -5,8 +5,8 @@ return [
      * TODO find a way to display this programmatically
      * 'software' => [
         [
-            'title' => _i('FoolFuuka Version'),
-            'value' => \Foolz\Foolframe\Model\Legacy\Config::get('foolz/foolfuuka', 'package', 'main.version'),
+            'title' => _i('Foolslide Version'),
+            'value' => \Foolz\Foolframe\Model\Legacy\Config::get('foolz/foolslide', 'package', 'main.version'),
             'alert' => [
                 'type' => 'info',
                 'condition' => true,

@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Foolframe\Model\Logger;
 use Foolz\Foolframe\Model\Preferences;
@@ -50,8 +50,8 @@ class Search extends Board
 
         $this->logger = $context->getService('logger');
         $this->preferences = $context->getService('preferences');
-        $this->radix_coll = $context->getService('foolfuuka.radix_collection');
-        $this->media_factory = $context->getService('foolfuuka.media_factory');
+        $this->radix_coll = $context->getService('foolslide.radix_collection');
+        $this->media_factory = $context->getService('foolslide.media_factory');
     }
 
     /**
@@ -192,7 +192,7 @@ class Search extends Board
      *
      * @param  array  $arguments  The search arguments
      *
-     * @return  \Foolz\Foolfuuka\Model\Search  The current object
+     * @return  \Foolz\Foolslide\Model\Search  The current object
      */
     protected function p_getSearch($arguments)
     {
@@ -210,7 +210,7 @@ class Search extends Board
     /**
      * Gets the search results
      *
-     * @return  \Foolz\Foolfuuka\Model\Search  The current object
+     * @return  \Foolz\Foolslide\Model\Search  The current object
      * @throws  SearchEmptyResultException     If there's no results to display
      * @throws  SearchRequiresSphinxException  If the search submitted requires Sphinx to run
      * @throws  SearchSphinxOfflineException   If the Sphinx server is unreachable
@@ -270,12 +270,12 @@ class Search extends Board
             }
         }
 
-        if ($this->radix === null && !$this->preferences->get('foolfuuka.sphinx.global')) {
+        if ($this->radix === null && !$this->preferences->get('foolslide.sphinx.global')) {
             // global search requires sphinx
             throw new SearchRequiresSphinxException(_i('Sorry, this action requires the Sphinx to be installed and running.'));
-        } elseif (($this->radix === null && $this->preferences->get('foolfuuka.sphinx.global')) || ($this->radix !== null && $this->radix->sphinx)) {
+        } elseif (($this->radix === null && $this->preferences->get('foolslide.sphinx.global')) || ($this->radix !== null && $this->radix->sphinx)) {
             // configure sphinx connection params
-            $sphinx = explode(':', $this->preferences->get('foolfuuka.sphinx.listen'));
+            $sphinx = explode(':', $this->preferences->get('foolslide.sphinx.listen'));
             $conn = new SphinxConnnection();
             $conn->setParams(['host' => $sphinx[0], 'port' => $sphinx[1], 'options' => [MYSQLI_OPT_CONNECT_TIMEOUT => 5]]);
             $conn->silenceConnectionWarning(true);
@@ -434,7 +434,7 @@ class Search extends Board
                 $query->orderBy('timestamp', 'DESC');
             }
 
-            $max_matches = $this->preferences->get('foolfuuka.sphinx.max_matches', 5000);
+            $max_matches = $this->preferences->get('foolslide.sphinx.max_matches', 5000);
 
             // set sphinx options
             $query->limit($limit)

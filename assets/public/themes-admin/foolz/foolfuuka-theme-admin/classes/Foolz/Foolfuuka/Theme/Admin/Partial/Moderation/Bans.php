@@ -1,8 +1,8 @@
 <?php
 
-namespace Foolz\Foolfuuka\Theme\Admin\Partial\Moderation;
+namespace Foolz\Foolslide\Theme\Admin\Partial\Moderation;
 
-use Foolz\Foolfuuka\Model\Ban;
+use Foolz\Foolslide\Model\Ban;
 use Foolz\Inet\Inet;
 
 class Bans extends \Foolz\Foolframe\View\View
@@ -10,7 +10,7 @@ class Bans extends \Foolz\Foolframe\View\View
     public function toString()
     {
         $users = $this->getContext()->getService('users');
-        $radix_coll = $this->getContext()->getService('foolfuuka.radix_collection');
+        $radix_coll = $this->getContext()->getService('foolslide.radix_collection');
         $form = $this->getForm();
 
         ?>
@@ -41,7 +41,7 @@ class Bans extends \Foolz\Foolframe\View\View
         <tbody>
             <?php foreach ($this->getParamManager()->getParam('bans') as $b) : ?>
             <tr>
-                <td><?= Inet::dtop($b->ip) ?><?= $this->getPreferences()->get('foolfuuka.sphinx.global') ?  '<br><small><a href="'.$this->getUri()->create('_/search/poster_ip/'. Inet::dtop($b->ip)).'" target="_blank">'._i('Search posts').'</a></small>' : '' ?></td>
+                <td><?= Inet::dtop($b->ip) ?><?= $this->getPreferences()->get('foolslide.sphinx.global') ?  '<br><small><a href="'.$this->getUri()->create('_/search/poster_ip/'. Inet::dtop($b->ip)).'" target="_blank">'._i('Search posts').'</a></small>' : '' ?></td>
                 <td><?= $b->board_id ? '/'.$radix_coll->getById($b->board_id)->shortname.'/' : _i('Global') ?></td>
                 <td><?= htmlentities($b->reason) ?><br><small><?= _i('By:').' '.htmlentities($users->getUserBy('id', $b->creator_id)->username) ?></small></td>
                 <td><?= htmlentities($b->appeal) ?><br><small><?= _i('Status:').' '.($b->appeal_status == Ban::APPEAL_PENDING ? _i('pending') : '').($b->appeal_status == Ban::APPEAL_REJECTED ? _i('rejected') : '').($b->appeal_status == Ban::APPEAL_NONE ? _i('none') : '') ?></small></td>

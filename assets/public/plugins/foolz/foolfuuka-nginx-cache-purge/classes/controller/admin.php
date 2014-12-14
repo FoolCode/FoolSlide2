@@ -26,7 +26,7 @@ class NginxCachePurge extends \Foolz\Foolframe\Controller\Admin
             'open' => [
                 'type' => 'open',
             ],
-            'foolfuuka.plugins.nginx_cache_purge.urls' => [
+            'foolslide.plugins.nginx_cache_purge.urls' => [
                 'type' => 'textarea',
                 'preferences' => true,
                 'label' => _i('Cache cleaning URLs'),

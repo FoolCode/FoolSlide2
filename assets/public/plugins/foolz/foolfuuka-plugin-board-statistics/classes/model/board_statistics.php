@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Plugins\BoardStatistics\Model;
+namespace Foolz\Foolslide\Plugins\BoardStatistics\Model;
 
 use Foolz\Foolframe\Model\Context;
 use Foolz\Foolframe\Model\DoctrineConnection;
@@ -88,7 +88,7 @@ class BoardStatistics extends Model
     {
         $stats = $this->getStats();
         // this variable is going to be a serialized array
-        $enabled = $this->preferences->get('foolfuuka.plugins.board_statistics.enabled');
+        $enabled = $this->preferences->get('foolslide.plugins.board_statistics.enabled');
 
         if (!$enabled) {
             return array();

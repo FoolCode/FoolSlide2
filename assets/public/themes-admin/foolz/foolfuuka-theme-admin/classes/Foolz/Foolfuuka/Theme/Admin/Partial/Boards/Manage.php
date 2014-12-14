@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Theme\Admin\Partial\Boards;
+namespace Foolz\Foolslide\Theme\Admin\Partial\Boards;
 
 class Manage extends \Foolz\Foolframe\View\View
 {

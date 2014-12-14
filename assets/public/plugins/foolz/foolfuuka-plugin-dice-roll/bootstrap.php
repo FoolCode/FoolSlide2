@@ -8,7 +8,7 @@ class HHVM_Dice
 {
     public function run()
     {
-        Event::forge('Foolz\Plugin\Plugin::execute.foolz/foolfuuka-plugin-dice-roll')
+        Event::forge('Foolz\Plugin\Plugin::execute.foolz/foolslide-plugin-dice-roll')
             ->setCall(function($result) {
 
                 /* @var Context $context */
@@ -16,13 +16,13 @@ class HHVM_Dice
                 /** @var Autoloader $autoloader */
                 $autoloader = $context->getService('autoloader');
 
-                $autoloader->addClass('Foolz\Foolfuuka\Plugins\DiceRoll\Model\Dice', __DIR__.'/classes/model/dice.php');
+                $autoloader->addClass('Foolz\Foolslide\Plugins\DiceRoll\Model\Dice', __DIR__.'/classes/model/dice.php');
 
-                Event::forge('Foolz\Foolfuuka\Model\CommentInsert::insert.call.after.input_checks')
-                    ->setCall('Foolz\Foolfuuka\Plugins\DiceRoll\Model\Dice::roll')
+                Event::forge('Foolz\Foolslide\Model\CommentInsert::insert.call.after.input_checks')
+                    ->setCall('Foolz\Foolslide\Plugins\DiceRoll\Model\Dice::roll')
                     ->setPriority(4);
 
-                Event::forge('Foolz\Foolfuuka\Model\Radix::structure.result')
+                Event::forge('Foolz\Foolslide\Model\Radix::structure.result')
                     ->setCall(function($result) {
                         $structure = $result->getParam('structure');
                         $structure['plugin_dice_roll_enable'] = [

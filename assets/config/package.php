@@ -3,38 +3,38 @@
 return [
 
     /**
-     * FoolFuuka base variables
+     * Foolslide base variables
      */
     'main' => [
         /**
          * Version for autoupgrades
          */
-        'version' => '2.0.1',
+        'version' => '2.0.0',
 
         /**
          * Display name for the module
          */
-        'name' => 'FoolFuuka',
+        'name' => 'Foolslide',
 
         /**
          * The name that can be used in classes names
          */
-        'class_name' => 'Foolfuuka',
+        'class_name' => 'Foolslide',
 
         /**
          *  URL to download a newer version
          */
-        'git_tags_url' => 'https://api.github.com/repos/FoolCode/foolfuuka/tags',
+        'git_tags_url' => 'https://api.github.com/repos/FoolCode/foolslide/tags',
 
         /**
          * URL to fetch the changelog
          */
-        'git_changelog_url' => 'https://raw.github.com/FoolCode/FoOlFuuka/master/CHANGELOG.md',
+        'git_changelog_url' => 'https://raw.github.com/FoolCode/Foolslide/master/CHANGELOG.md',
 
         /**
          * Minimal PHP requirement
          */
-        'min_php_version' => '5.3.0'
+        'min_php_version' => '5.4.0'
     ],
 
     /**
@@ -51,8 +51,8 @@ return [
     'preferences' => [
 
         'gen' => [
-            'website_title' => 'FoolFuuka',
-            'index_title' => 'FoolFuuka',
+            'website_title' => 'Foolslide',
+            'index_title' => 'Foolslide',
         ],
 
         'lang' => [
@@ -92,8 +92,8 @@ return [
         ],
 
         'boards' => [
-            'directory' => DOCROOT.'foolfuuka/boards/',
-            'url' => '/foolfuuka/boards/'
+            'directory' => DOCROOT.'foolslide/boards/',
+            'url' => '/foolslide/boards/'
         ]
     ]
 ];

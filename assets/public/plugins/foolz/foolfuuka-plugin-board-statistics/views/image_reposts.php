@@ -1,5 +1,5 @@
-<?php use Foolz\Foolfuuka\Model\CommentBulk;
-use Foolz\Foolfuuka\Model\Media;
+<?php use Foolz\Foolslide\Model\CommentBulk;
+use Foolz\Foolslide\Model\Media;
 
 $data_array = json_decode($data); ?>
 <?php foreach ($data_array as $key => $item) : ?>

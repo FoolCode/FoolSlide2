@@ -1,6 +1,6 @@
 {
-	"name": "foolz/foolfuuka-plugin-patch-sopa-spoilers-2012",
-	"type": "foolz-foolfuuka-plugin",
+	"name": "foolz/foolslide-plugin-patch-sopa-spoilers-2012",
+	"type": "foolz-foolslide-plugin",
 	"description": "Prevents the display of the spoilers used by 4chan during the SOPA protest.",
 	"version": "1.0.0",
 	"keywords": ["fake", "mock"],
@@ -20,6 +20,6 @@
 		"name": "Patch SOPA Spoilers 2012",
 		"slug": "patch_sopa_spoilers_2012",
 		"identifier": "fu",
-		"module": "foolfuuka"
+		"module": "foolslide"
 	}
 }

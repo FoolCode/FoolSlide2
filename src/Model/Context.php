@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Foolframe\Model\Auth;
 use Foolz\Foolframe\Model\ContextInterface;
@@ -25,37 +25,37 @@ class Context implements ContextInterface
 
         /** @var \Foolz\Foolframe\Model\Config $config */
         $config = $this->context->getService('config');
-        $config->addPackage('foolz/foolfuuka', ASSETSPATH);
+        $config->addPackage('foolz/foolslide', ASSETSPATH);
 
-        class_alias('Foolz\\Foolfuuka\\Model\\Ban', 'Ban');
-        class_alias('Foolz\\Foolfuuka\\Model\\Board', 'Board');
-        class_alias('Foolz\\Foolfuuka\\Model\\Comment', 'Comment');
-        class_alias('Foolz\\Foolfuuka\\Model\\CommentInsert', 'CommentInsert');
-        class_alias('Foolz\\Foolfuuka\\Model\\Media', 'Media');
-        class_alias('Foolz\\Foolfuuka\\Model\\Radix', 'Radix');
-        class_alias('Foolz\\Foolfuuka\\Model\\Report', 'Report');
-        class_alias('Foolz\\Foolfuuka\\Model\\Search', 'Search');
+        class_alias('Foolz\\Foolslide\\Model\\Ban', 'Ban');
+        class_alias('Foolz\\Foolslide\\Model\\Board', 'Board');
+        class_alias('Foolz\\Foolslide\\Model\\Comment', 'Comment');
+        class_alias('Foolz\\Foolslide\\Model\\CommentInsert', 'CommentInsert');
+        class_alias('Foolz\\Foolslide\\Model\\Media', 'Media');
+        class_alias('Foolz\\Foolslide\\Model\\Radix', 'Radix');
+        class_alias('Foolz\\Foolslide\\Model\\Report', 'Report');
+        class_alias('Foolz\\Foolslide\\Model\\Search', 'Search');
 
         require_once __DIR__.'/../../assets/packages/stringparser-bbcode/library/stringparser_bbcode.class.php';
 
         $context->getContainer()
-            ->register('foolfuuka.radix_collection', 'Foolz\Foolfuuka\Model\RadixCollection')
+            ->register('foolslide.radix_collection', 'Foolz\Foolslide\Model\RadixCollection')
             ->addArgument($context);
 
         $context->getContainer()
-            ->register('foolfuuka.comment_factory', 'Foolz\Foolfuuka\Model\CommentFactory')
+            ->register('foolslide.comment_factory', 'Foolz\Foolslide\Model\CommentFactory')
             ->addArgument($context);
 
         $context->getContainer()
-            ->register('foolfuuka.media_factory', 'Foolz\Foolfuuka\Model\MediaFactory')
+            ->register('foolslide.media_factory', 'Foolz\Foolslide\Model\MediaFactory')
             ->addArgument($context);
 
         $context->getContainer()
-            ->register('foolfuuka.ban_factory', 'Foolz\Foolfuuka\Model\BanFactory')
+            ->register('foolslide.ban_factory', 'Foolz\Foolslide\Model\BanFactory')
             ->addArgument($context);
 
         $context->getContainer()
-            ->register('foolfuuka.report_collection', 'Foolz\Foolfuuka\Model\ReportCollection')
+            ->register('foolslide.report_collection', 'Foolz\Foolslide\Model\ReportCollection')
             ->addArgument($context);
     }
 
@@ -65,11 +65,11 @@ class Context implements ContextInterface
         $config = $this->context->getService('config');
         $uri = $this->context->getService('uri');
 
-        $theme_instance = \Foolz\Theme\Loader::forge('foolfuuka');
-        $theme_instance->addDir($config->get('foolz/foolfuuka', 'package', 'directories.themes'));
-        $theme_instance->addDir(VAPPPATH.'foolz/foolfuuka/themes/');
-        $theme_instance->setBaseUrl($uri->base().'foolfuuka/');
-        $theme_instance->setPublicDir(DOCROOT.'foolfuuka/');
+        $theme_instance = \Foolz\Theme\Loader::forge('foolslide');
+        $theme_instance->addDir($config->get('foolz/foolslide', 'package', 'directories.themes'));
+        $theme_instance->addDir(VAPPPATH.'foolz/foolslide/themes/');
+        $theme_instance->setBaseUrl($uri->base().'foolslide/');
+        $theme_instance->setPublicDir(DOCROOT.'foolslide/');
 
         // set an ->enabled on the themes we want to use
         /** @var Auth $auth */
@@ -79,7 +79,7 @@ class Context implements ContextInterface
                 ->setCall(function($result) use ($config) {
                     $environment = $result->getParam('environment');
 
-                    foreach ($config->get('foolz/foolfuuka', 'environment') as $section => $data) {
+                    foreach ($config->get('foolz/foolslide', 'environment') as $section => $data) {
                         foreach ($data as $k => $i) {
                             array_push($environment[$section]['data'], $i);
                         }
@@ -92,10 +92,10 @@ class Context implements ContextInterface
                 $theme->enabled = true;
             }
         } else {
-            if ($themes_enabled = $preferences->get('foolfuuka.theme.active_themes')) {
+            if ($themes_enabled = $preferences->get('foolslide.theme.active_themes')) {
                 $themes_enabled = unserialize($themes_enabled);
             } else {
-                $themes_enabled = ['foolz/foolfuuka-theme-foolfuuka' => 1];
+                $themes_enabled = ['foolz/foolslide-theme-foolslide' => 1];
             }
 
             foreach ($themes_enabled as $key => $item) {
@@ -111,7 +111,7 @@ class Context implements ContextInterface
         }
 
         try {
-            $theme_name = $request->query->get('theme', $request->cookies->get($this->context->getService('config')->get('foolz/foolframe', 'config', 'config.cookie_prefix').'theme')) ? : $preferences->get('foolfuuka.theme.default');
+            $theme_name = $request->query->get('theme', $request->cookies->get($this->context->getService('config')->get('foolz/foolframe', 'config', 'config.cookie_prefix').'theme')) ? : $preferences->get('foolslide.theme.default');
             $theme_name_exploded = explode('/', $theme_name);
 
             // must get rid of the style
@@ -125,7 +125,7 @@ class Context implements ContextInterface
                 throw new \OutOfBoundsException;
             }
         } catch (\OutOfBoundsException $e) {
-            $theme = $theme_instance->get('foolz/foolfuuka-theme-foolfuuka');
+            $theme = $theme_instance->get('foolz/foolslide-theme-foolslide');
         }
 
         $theme->bootstrap();
@@ -133,36 +133,36 @@ class Context implements ContextInterface
 
     public function loadRoutes(RouteCollection $route_collection)
     {
-        Hook::forge('Foolz\Foolfuuka\Model\Context.loadRoutes.before')
+        Hook::forge('Foolz\Foolslide\Model\Context.loadRoutes.before')
             ->setObject($this)
             ->setParam('route_collection', $route_collection)
             ->execute();
 
-        $route_collection->add('foolfuuka.root', new Route(
+        $route_collection->add('foolslide.root', new Route(
             '/',
-            ['_controller' => '\Foolz\Foolfuuka\Controller\Chan::index']
+            ['_controller' => '\Foolz\Foolslide\Controller\Chan::index']
         ));
 
         $route_collection->add('404', new Route(
             '',
-            ['_controller' => '\Foolz\Foolfuuka\Controller\Chan::404']
+            ['_controller' => '\Foolz\Foolslide\Controller\Chan::404']
         ));
 
-        $route = \Foolz\Plugin\Hook::forge('Foolz\Foolfuuka\Model\Content::routes.collection')
+        $route = \Foolz\Plugin\Hook::forge('Foolz\Foolslide\Model\Content::routes.collection')
             ->setParams([
                 'default_suffix' => 'page',
                 'suffix' => 'page',
-                'controller' => '\Foolz\Foolfuuka\Controller\Chan::*'
+                'controller' => '\Foolz\Foolslide\Controller\Chan::*'
             ])
             ->execute();
 
 
         /** @var Radix[] $radix_all */
-        $radix_all = $this->context->getService('foolfuuka.radix_collection')->getAll();
+        $radix_all = $this->context->getService('foolslide.radix_collection')->getAll();
 
         foreach ($radix_all as $radix) {
             $route_collection->add(
-                'foolfuuka.chan.radix.'.$radix->shortname, new Route(
+                'foolslide.chan.radix.'.$radix->shortname, new Route(
                 '/'.$radix->shortname.'/{_suffix}',
                 [
                     '_default_suffix' => $route->getParam('default_suffix'),
@@ -177,11 +177,11 @@ class Context implements ContextInterface
         }
 
         $route_collection->add(
-            'foolfuuka.chan.api', new Route(
+            'foolslide.chan.api', new Route(
             '/_/api/chan/{_suffix}',
             [
                 '_suffix' => '',
-                '_controller' => '\Foolz\Foolfuuka\Controller\Api\Chan::*',
+                '_controller' => '\Foolz\Foolslide\Controller\Api\Chan::*',
             ],
             [
                 '_suffix' => '.*'
@@ -189,11 +189,11 @@ class Context implements ContextInterface
         ));
 
         $route_collection->add(
-            'foolfuuka.chan._', new Route(
+            'foolslide.chan._', new Route(
             '/_/{_suffix}',
             [
                 '_suffix' => '',
-                '_controller' => '\Foolz\Foolfuuka\Controller\Chan::*',
+                '_controller' => '\Foolz\Foolslide\Controller\Chan::*',
             ],
             [
                 '_suffix' => '.*'
@@ -202,11 +202,11 @@ class Context implements ContextInterface
 
         foreach(['boards', 'moderation'] as $location) {
             $route_collection->add(
-                'foolfuuka.admin.'.$location, new Route(
+                'foolslide.admin.'.$location, new Route(
                     '/admin/'.$location.'/{_suffix}',
                     [
                         '_suffix' => '',
-                        '_controller' => '\Foolz\Foolfuuka\Controller\Admin\\'.ucfirst($location).'::*',
+                        '_controller' => '\Foolz\Foolslide\Controller\Admin\\'.ucfirst($location).'::*',
                     ],
                     [
                         '_suffix' => '.*',
@@ -215,7 +215,7 @@ class Context implements ContextInterface
             );
         }
 
-        Hook::forge('Foolz\Foolfuuka\Model\Context.loadRoutes.after')
+        Hook::forge('Foolz\Foolslide\Model\Context.loadRoutes.after')
             ->setObject($this)
             ->setParam('route_collection', $route_collection)
             ->execute();

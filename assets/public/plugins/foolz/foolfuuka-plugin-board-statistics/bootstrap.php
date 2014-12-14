@@ -6,7 +6,7 @@ use Foolz\Foolframe\Model\Context;
 use Foolz\Foolframe\Model\DoctrineConnection;
 use Foolz\Foolframe\Model\Plugins;
 use Foolz\Foolframe\Model\Uri;
-use Foolz\Foolfuuka\Model\RadixCollection;
+use Foolz\Foolslide\Model\RadixCollection;
 use Foolz\Plugin\Event;
 use Symfony\Component\Routing\Route;
 
@@ -14,7 +14,7 @@ class HHVM_BS
 {
     public function run()
     {
-        Event::forge('Foolz\Plugin\Plugin::execute.foolz/foolfuuka-plugin-board-statistics')
+        Event::forge('Foolz\Plugin\Plugin::execute.foolz/foolslide-plugin-board-statistics')
             ->setCall(function ($result) {
                 /* @var Context $context */
                 $context = $result->getParam('context');
@@ -23,13 +23,13 @@ class HHVM_BS
 
                 $autoloader->addClassMap([
                     'Foolz\Foolframe\Controller\Admin\Plugins\BoardStatistics' => __DIR__ . '/classes/controller/admin.php',
-                    'Foolz\Foolfuuka\Controller\Chan\BoardStatistics' => __DIR__ . '/classes/controller/chan.php',
-                    'Foolz\Foolfuuka\Plugins\BoardStatistics\Model\BoardStatistics' => __DIR__ . '/classes/model/board_statistics.php',
-                    'Foolz\Foolfuuka\Plugins\BoardStatistics\Console\Console' => __DIR__ . '/classes/console/console.php'
+                    'Foolz\Foolslide\Controller\Chan\BoardStatistics' => __DIR__ . '/classes/controller/chan.php',
+                    'Foolz\Foolslide\Plugins\BoardStatistics\Model\BoardStatistics' => __DIR__ . '/classes/model/board_statistics.php',
+                    'Foolz\Foolslide\Plugins\BoardStatistics\Console\Console' => __DIR__ . '/classes/console/console.php'
                 ]);
 
                 $context->getContainer()
-                    ->register('foolfuuka-plugin.board_statistics', 'Foolz\Foolfuuka\Plugins\BoardStatistics\Model\BoardStatistics')
+                    ->register('foolslide-plugin.board_statistics', 'Foolz\Foolslide\Plugins\BoardStatistics\Model\BoardStatistics')
                     ->addArgument($context);
 
                 Event::forge('Foolz\Foolframe\Model\Context.handleWeb.has_auth')
@@ -74,23 +74,23 @@ class HHVM_BS
                 Event::forge('Foolz\Foolframe\Model\Context::handleConsole.add')
                     ->setCall(function ($result) use ($context) {
                         $result->getParam('application')
-                            ->add(new \Foolz\Foolfuuka\Plugins\BoardStatistics\Console\Console($context));
+                            ->add(new \Foolz\Foolslide\Plugins\BoardStatistics\Console\Console($context));
                     });
 
                 Event::forge('Foolz\Foolframe\Model\Context.handleWeb.route_collection')
                     ->setCall(function ($result) use ($context) {
                         /** @var RadixCollection $radix_coll */
-                        $radix_coll = $context->getService('foolfuuka.radix_collection');
+                        $radix_coll = $context->getService('foolslide.radix_collection');
                         $radix_all = $radix_coll->getAll();
 
                         foreach ($radix_all as $radix) {
                             $obj = $result->getObject();
                             $obj->getRouteCollection()->add(
-                                'foolfuuka.plugin.board_statistics.chan.radix.' . $radix->shortname, new Route(
+                                'foolslide.plugin.board_statistics.chan.radix.' . $radix->shortname, new Route(
                                 '/' . $radix->shortname . '/statistics/{_suffix}',
                                 [
                                     '_suffix' => '',
-                                    '_controller' => '\Foolz\Foolfuuka\Controller\Chan\BoardStatistics::statistics',
+                                    '_controller' => '\Foolz\Foolslide\Controller\Chan\BoardStatistics::statistics',
                                     'radix_shortname' => $radix->shortname
                                 ],
                                 [
@@ -101,7 +101,7 @@ class HHVM_BS
                     });
             });
 
-        Event::forge('Foolz\Foolframe\Model\Plugin::schemaUpdate.foolz/foolfuuka-plugin-board-statistics')
+        Event::forge('Foolz\Foolframe\Model\Plugin::schemaUpdate.foolz/foolslide-plugin-board-statistics')
             ->setCall(function ($result) {
                 /** @var Context $context */
                 $context = $result->getParam('context');

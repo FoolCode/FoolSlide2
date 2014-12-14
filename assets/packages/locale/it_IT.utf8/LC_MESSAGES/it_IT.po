@@ -3,12 +3,12 @@
 # Enzo Woxxy <woxxy@foolrulez.org>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: FoOlFuuka\n"
+"Project-Id-Version: Foolslide\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-01 14:57+0100\n"
 "PO-Revision-Date: 2012-06-01 15:39+0000\n"
 "Last-Translator: Enzo Woxxy <woxxy@foolrulez.org>\n"
-"Language-Team: Italian (Italy) (http://www.transifex.net/projects/p/foolfuuka/language/it_IT/)\n"
+"Language-Team: Italian (Italy) (http://www.transifex.net/projects/p/foolslide/language/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -615,8 +615,8 @@ msgstr "Directory delle board"
 #: ../../application/controllers/admin/boards.php:283
 msgid ""
 "Overrides the default path to the boards directory (Example: "
-"/var/www/foolfuuka/boards)"
-msgstr "Rimpiazza la directory di default delle board (Esempio: /var/www/foolfuuka/boards)"
+"/var/www/foolslide/boards)"
+msgstr "Rimpiazza la directory di default delle board (Esempio: /var/www/foolslide/boards)"
 
 #: ../../application/controllers/admin/boards.php:288
 msgid "Boards URL"
@@ -625,8 +625,8 @@ msgstr "URL delle board"
 #: ../../application/controllers/admin/boards.php:290
 msgid ""
 "Overrides the default url to the boards folder (Example: "
-"http://foolfuuka.site.com/there/boards)"
-msgstr "Rimpiazza l'URL di default della directory della board (Esempio: http://foolfuuka.site.com/there/board)"
+"http://foolslide.site.com/there/boards)"
+msgstr "Rimpiazza l'URL di default della directory della board (Esempio: http://foolslide.site.com/there/board)"
 
 #: ../../application/controllers/admin/boards.php:295
 #: ../../application/controllers/admin/boards.php:302
@@ -1867,9 +1867,9 @@ msgid ""
 "\n"
 "Asagi is the Open Source (GPLv3) 4chan data fetcher coded by Eksopl. It can dump the threads, images and thumbnails from the Yotsuba boards in 4chan into your server for easy consumption.\n"
 "\n"
-"If you're interested in using FoOlFuuka as a 4chan archive, you need to download, setup and run Asagi.\n"
+"If you're interested in using Foolslide as a 4chan archive, you need to download, setup and run Asagi.\n"
 "\n"
-"We can do the downloading and the setup, and all that is left to you is running it since we can't reliably run it off the web interface. FoOlFuuka will keep the settings of Asagi updated for you, so you can manage your archives through the boards manager.\n"
+"We can do the downloading and the setup, and all that is left to you is running it since we can't reliably run it off the web interface. Foolslide will keep the settings of Asagi updated for you, so you can manage your archives through the boards manager.\n"
 "\n"
 "Requirements: Java installed on your server.\n"
 msgstr ""
@@ -2894,8 +2894,8 @@ msgid "Redirecting..."
 msgstr "Reindirizzo..."
 
 #: ../../content/themes/fuuka/views/index.php:7
-msgid "Welcome on the 4chan Archiver \"FoOlFuuka\""
-msgstr "Benvenuto all'Archivio 4chan \"FoOlFuuka\""
+msgid "Welcome on the 4chan Archiver \"Foolslide\""
+msgstr "Benvenuto all'Archivio 4chan \"Foolslide\""
 
 #: ../../content/themes/fuuka/views/index.php:8
 msgid "Choose a 4chan board:"

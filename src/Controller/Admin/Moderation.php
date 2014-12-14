@@ -1,10 +1,10 @@
 <?php
 
-namespace Foolz\Foolfuuka\Controller\Admin;
+namespace Foolz\Foolslide\Controller\Admin;
 
-use Foolz\Foolfuuka\Model\BanFactory;
-use Foolz\Foolfuuka\Model\RadixCollection;
-use Foolz\Foolfuuka\Model\ReportCollection;
+use Foolz\Foolslide\Model\BanFactory;
+use Foolz\Foolslide\Model\RadixCollection;
+use Foolz\Foolslide\Model\ReportCollection;
 use Foolz\Inet\Inet;
 use Foolz\Theme\Loader;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,9 +35,9 @@ class Moderation extends \Foolz\Foolframe\Controller\Admin
     {
         parent::before();
 
-        $this->radix_coll = $this->getContext()->getService('foolfuuka.radix_collection');
-        $this->report_coll = $this->getContext()->getService('foolfuuka.report_collection');
-        $this->ban_factory = $this->getContext()->getService('foolfuuka.ban_factory');
+        $this->radix_coll = $this->getContext()->getService('foolslide.radix_collection');
+        $this->report_coll = $this->getContext()->getService('foolslide.report_collection');
+        $this->ban_factory = $this->getContext()->getService('foolslide.ban_factory');
 
         $this->param_manager->setParam('controller_title', _i('Moderation'));
     }
@@ -56,7 +56,7 @@ class Moderation extends \Foolz\Foolframe\Controller\Admin
     {
         // we need to load more themes
         $theme_instance->addDir(ASSETSPATH.'public/themes-admin');
-        $this->theme = $theme_instance->get('foolz/foolfuuka-theme-admin');
+        $this->theme = $theme_instance->get('foolz/foolslide-theme-admin');
     }
 
     public function action_bans($page = 1)
@@ -119,7 +119,7 @@ class Moderation extends \Foolz\Foolframe\Controller\Admin
 
         try {
             $bans = $this->ban_factory->getByIp(Inet::ptod($ip));
-        } catch (\Foolz\Foolfuuka\Model\BanException $e) {
+        } catch (\Foolz\Foolslide\Model\BanException $e) {
             $bans = [];
         }
 
@@ -137,7 +137,7 @@ class Moderation extends \Foolz\Foolframe\Controller\Admin
     {
         try {
             $ban = $this->ban_factory->getById($id);
-        } catch (\Foolz\Foolfuuka\Model\BanException $e) {
+        } catch (\Foolz\Foolslide\Model\BanException $e) {
             throw new NotFoundHttpException;
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Controller;
+namespace Foolz\Foolslide\Controller;
 
 use Foolz\Foolframe\Controller\Common;
 use Foolz\Foolframe\Model\Config;
@@ -10,19 +10,19 @@ use Foolz\Foolframe\Model\Util;
 use Foolz\Foolframe\Model\Validation\ActiveConstraint\Trim;
 use Foolz\Foolframe\Model\Validation\Validator;
 use Foolz\Foolframe\Model\Cookie;
-use Foolz\Foolfuuka\Model\Ban;
-use Foolz\Foolfuuka\Model\BanFactory;
-use Foolz\Foolfuuka\Model\Board;
-use Foolz\Foolfuuka\Model\Comment;
-use Foolz\Foolfuuka\Model\CommentBulk;
-use Foolz\Foolfuuka\Model\CommentFactory;
-use Foolz\Foolfuuka\Model\CommentInsert;
-use Foolz\Foolfuuka\Model\Media;
-use Foolz\Foolfuuka\Model\MediaFactory;
-use Foolz\Foolfuuka\Model\Radix;
-use Foolz\Foolfuuka\Model\RadixCollection;
-use Foolz\Foolfuuka\Model\Report;
-use Foolz\Foolfuuka\Model\Search;
+use Foolz\Foolslide\Model\Ban;
+use Foolz\Foolslide\Model\BanFactory;
+use Foolz\Foolslide\Model\Board;
+use Foolz\Foolslide\Model\Comment;
+use Foolz\Foolslide\Model\CommentBulk;
+use Foolz\Foolslide\Model\CommentFactory;
+use Foolz\Foolslide\Model\CommentInsert;
+use Foolz\Foolslide\Model\Media;
+use Foolz\Foolslide\Model\MediaFactory;
+use Foolz\Foolslide\Model\Radix;
+use Foolz\Foolslide\Model\RadixCollection;
+use Foolz\Foolslide\Model\Report;
+use Foolz\Foolslide\Model\Search;
 use Foolz\Inet\Inet;
 use Foolz\Profiler\Profiler;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -117,15 +117,15 @@ class Chan extends Common
         $this->preferences = $this->getContext()->getService('preferences');
         $this->uri = $this->getContext()->getService('uri');
         $this->profiler = $this->getContext()->getService('profiler');
-        $this->radix_coll = $this->getContext()->getService('foolfuuka.radix_collection');
-        $this->media_factory = $this->getContext()->getService('foolfuuka.media_factory');
-        $this->comment_factory = $this->getContext()->getService('foolfuuka.comment_factory');
+        $this->radix_coll = $this->getContext()->getService('foolslide.radix_collection');
+        $this->media_factory = $this->getContext()->getService('foolslide.media_factory');
+        $this->comment_factory = $this->getContext()->getService('foolslide.comment_factory');
 
-        // this has already been forged in the foolfuuka bootstrap
-        $theme_instance = \Foolz\Theme\Loader::forge('foolfuuka');
+        // this has already been forged in the foolslide bootstrap
+        $theme_instance = \Foolz\Theme\Loader::forge('foolslide');
 
         try {
-            $theme_name = $this->getQuery('theme', $this->getCookie('theme')) ? : $this->preferences->get('foolfuuka.theme.default');
+            $theme_name = $this->getQuery('theme', $this->getCookie('theme')) ? : $this->preferences->get('foolslide.theme.default');
 
             $theme_name_exploded = explode('/', $theme_name);
             if (count($theme_name_exploded) >=2) {
@@ -138,11 +138,11 @@ class Chan extends Common
             }
             $this->theme = $theme;
         } catch (\OutOfBoundsException $e) {
-            $theme_name = 'foolz/foolfuuka-theme-foolfuuka';
-            $this->theme = $theme_instance->get('foolz/foolfuuka-theme-foolfuuka');
+            $theme_name = 'foolz/foolslide-theme-foolslide';
+            $this->theme = $theme_instance->get('foolz/foolslide-theme-foolslide');
         }
 
-        // TODO this is currently bootstrapped in the foolfuuka bootstrap because we need it running before the router.
+        // TODO this is currently bootstrapped in the foolslide bootstrap because we need it running before the router.
         //$this->theme->bootstrap();
         $this->builder = $this->theme->createBuilder();
         $this->param_manager = $this->builder->getParamManager();
@@ -244,7 +244,7 @@ class Chan extends Common
 
         $this->radix = null;
         $this->param_manager->setParam('radix', null);
-        $this->builder->getProps()->addTitle($this->preferences->get('foolframe.gen.website_title', $this->preferences->get('foolfuuka.gen.website_title')));
+        $this->builder->getProps()->addTitle($this->preferences->get('foolframe.gen.website_title', $this->preferences->get('foolslide.gen.website_title')));
 
         if (method_exists($this, 'action_'.$method)) {
             return [$this, 'action_'.$method, $parameters];
@@ -307,7 +307,7 @@ class Chan extends Common
         return $this->response->setContent($this->builder->build())->setStatusCode($code);
     }
 
-    public function action_theme($vendor = 'foolz', $theme = 'foolfuuka-theme-default', $style = '')
+    public function action_theme($vendor = 'foolz', $theme = 'foolslide-theme-default', $style = '')
     {
         $this->builder->getProps()->addTitle(_i('Changing Theme Settings'));
 
@@ -404,7 +404,7 @@ class Chan extends Common
             // execute in case there's more exceptions to handle
             $board->getComments();
             $board->getCount();
-        } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardException $e) {
             $this->profiler->log('Controller Chan::latest End Prematurely');
 
             return $this->error($e->getMessage());
@@ -547,10 +547,10 @@ class Chan extends Common
                     $this->builder->stream();
                 });
             }
-        } catch (\Foolz\Foolfuuka\Model\BoardThreadNotFoundException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardThreadNotFoundException $e) {
             $this->profiler->log('Controller Chan::thread End Prematurely');
             return $this->error($e->getMessage(), 404);
-        } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardException $e) {
             $this->profiler->log('Controller Chan::thread End Prematurely');
             return $this->error($e->getMessage());
         }
@@ -584,7 +584,7 @@ class Chan extends Common
                     'total' => $board->getPages()
                 ]
             ]);
-        } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardException $e) {
             return $this->error($e->getMessage());
         }
 
@@ -626,9 +626,9 @@ class Chan extends Common
                 ->getParamManager()
                 ->setParam('url', $redirect);
             $this->builder->getProps()->addTitle(_i('Redirecting'));
-        } catch (\Foolz\Foolfuuka\Model\BoardMalformedInputException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardMalformedInputException $e) {
             return $this->error(_i('The post number you submitted is invalid.'));
-        } catch (\Foolz\Foolfuuka\Model\BoardPostNotFoundException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardPostNotFoundException $e) {
             return $this->error(_i('The post you are looking for does not exist.'));
         }
 
@@ -646,7 +646,7 @@ class Chan extends Common
         $this->param_manager->setParam('section_title', _i('Reports'));
 
         /** @var Report[] $reports */
-        $reports = $this->getContext()->getService('foolfuuka.report_collection')->getAll();
+        $reports = $this->getContext()->getService('foolslide.report_collection')->getAll();
 
         $results = [];
         foreach ($reports as $report) {
@@ -713,7 +713,7 @@ class Chan extends Common
 
         try {
             $bulk = $this->media_factory->getByFilename($this->radix, $filename);
-        } catch (\Foolz\Foolfuuka\Model\MediaException $e) {
+        } catch (\Foolz\Foolslide\Model\MediaException $e) {
             return $this->action_404(_i('The image was never in our databases.'));
         }
 
@@ -914,12 +914,12 @@ class Chan extends Common
                 ->setRadix($this->radix)
                 ->setPage($search['page'] ? $search['page'] : 1);
             $board->getComments();
-        } catch (\Foolz\Foolfuuka\Model\SearchException $e) {
+        } catch (\Foolz\Foolslide\Model\SearchException $e) {
             return $this->error($e->getMessage());
-        } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+        } catch (\Foolz\Foolslide\Model\BoardException $e) {
             return $this->error($e->getMessage());
         } catch (\Foolz\SphinxQL\ConnectionException $e) {
-            return $this->error($this->preferences->get('foolfuuka.sphinx.custom_message', 'It appears that the search engine is offline at the moment. Please try again later.'));
+            return $this->error($this->preferences->get('foolslide.sphinx.custom_message', 'It appears that the search engine is offline at the moment. Please try again later.'));
         }
 
         // Generate the $title with all search modifiers enabled.
@@ -996,7 +996,7 @@ class Chan extends Common
 
         if ($board->getSearchCount() > 5000) {
             $search_title = sprintf(_i('%s <small>Returning only first %d of %d results found.</small>',
-                $title, $this->preferences->get('foolfuuka.sphinx.max_matches', 5000), $board->getSearchCount()));
+                $title, $this->preferences->get('foolslide.sphinx.max_matches', 5000), $board->getSearchCount()));
         } else {
             $search_title = sprintf(_i('%s <small>%d results found.</small>', $title, $board->getSearchCount()));
         }
@@ -1051,9 +1051,9 @@ class Chan extends Common
     {
         try {
             /** @var BanFactory $ban_factory */
-            $ban_factory = $this->getContext()->getService('foolfuuka.ban_factory');
+            $ban_factory = $this->getContext()->getService('foolslide.ban_factory');
             $bans = $ban_factory->getByIp(Inet::ptod($this->getRequest()->getClientIp()));
-        } catch (\Foolz\Foolfuuka\Model\BanException $e) {
+        } catch (\Foolz\Foolslide\Model\BanException $e) {
             return $this->error(_i('It doesn\'t look like you\'re banned.'));
         }
 
@@ -1186,13 +1186,13 @@ class Chan extends Common
             try {
                 $media = $this->media_factory->forgeFromUpload($this->getRequest(), $this->radix);
                 $media->media->spoiler = isset($data['spoiler']) && $data['spoiler'];
-            } catch (\Foolz\Foolfuuka\Model\MediaUploadNoFileException $e) {
+            } catch (\Foolz\Foolslide\Model\MediaUploadNoFileException $e) {
                 if ($this->getRequest()->isXmlHttpRequest()) {
                     return $this->response->setData(['error' => $e->getMessage()]);
                 } else {
                     return $this->error($e->getMessage());
                 }
-            } catch (\Foolz\Foolfuuka\Model\MediaUploadException $e) {
+            } catch (\Foolz\Foolslide\Model\MediaUploadException $e) {
                 if ($this->getRequest()->isXmlHttpRequest()) {
                     return $this->response->setData(['error' => $e->getMessage()]);
                 } else {
@@ -1235,13 +1235,13 @@ class Chan extends Common
                 $bulk->import($data, $this->radix);
                 $comment = new CommentInsert($this->getContext(), $bulk);
                 $comment->insert($media, $data);
-            } catch (\Foolz\Foolfuuka\Model\CommentSendingRequestCaptchaException $e) {
+            } catch (\Foolz\Foolslide\Model\CommentSendingRequestCaptchaException $e) {
                 if ($this->getRequest()->isXmlHttpRequest()) {
                     return $this->response->setData(['captcha' => true]);
                 } else {
                     return $this->error(_i('Your message looked like spam. Make sure you have JavaScript enabled to display the reCAPTCHA to submit the comment.'));
                 }
-            } catch (\Foolz\Foolfuuka\Model\CommentSendingException $e) {
+            } catch (\Foolz\Foolslide\Model\CommentSendingException $e) {
                 if ($this->getRequest()->isXmlHttpRequest()) {
                     return $this->response->setData(['error' => $e->getMessage()]);
                 } else {
@@ -1270,9 +1270,9 @@ class Chan extends Common
                         ]);
 
                     $comments = $board->getComments();
-                } catch (\Foolz\Foolfuuka\Model\BoardThreadNotFoundException $e) {
+                } catch (\Foolz\Foolslide\Model\BoardThreadNotFoundException $e) {
                     return $this->error(_i('Thread not found.'));
-                } catch (\Foolz\Foolfuuka\Model\BoardException $e) {
+                } catch (\Foolz\Foolslide\Model\BoardException $e) {
                     return $this->error(_i('Unknown error.'));
                 }
 

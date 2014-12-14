@@ -1,6 +1,6 @@
 {
-    "name": "foolz/foolfuuka",
-    "description": "The FoolFuuka Imageboard",
+    "name": "foolz/foolslide",
+    "description": "The FoolSlide Comic Reader",
     "authors": [
         {
             "name": "Foolz",
@@ -39,9 +39,6 @@
         "geoip2/geoip2": "~0.6"
     },
     "autoload": {
-        "psr-4": {"Foolz\\Foolfuuka\\": "src/"},
-        "classmap": [
-          "assets/packages/stringparser-bbcode/library/stringparser_bbcode.class.php"
-        ]
+        "psr-4": {"Foolz\\Foolslide\\": "src/"}
     }
 }

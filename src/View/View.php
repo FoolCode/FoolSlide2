@@ -1,10 +1,10 @@
 <?php
 
-namespace Foolz\Foolfuuka\View;
+namespace Foolz\Foolslide\View;
 
-use Foolz\Foolfuuka\Model\Radix;
-use Foolz\Foolfuuka\Model\RadixCollection;
-use Foolz\Foolfuuka\Model\ReportCollection;
+use Foolz\Foolslide\Model\Radix;
+use Foolz\Foolslide\Model\RadixCollection;
+use Foolz\Foolslide\Model\ReportCollection;
 
 class View extends \Foolz\Foolframe\View\View
 {
@@ -21,7 +21,7 @@ class View extends \Foolz\Foolframe\View\View
      */
     public function getRadixColl()
     {
-        return $this->getBuilderParamManager()->getParam('context')->getService('foolfuuka.radix_collection');
+        return $this->getBuilderParamManager()->getParam('context')->getService('foolslide.radix_collection');
     }
 
     /**
@@ -29,6 +29,6 @@ class View extends \Foolz\Foolframe\View\View
      */
     public function getReportColl()
     {
-        return $this->getBuilderParamManager()->getParam('context')->getService('foolfuuka.report_collection');
+        return $this->getBuilderParamManager()->getParam('context')->getService('foolslide.report_collection');
     }
 }

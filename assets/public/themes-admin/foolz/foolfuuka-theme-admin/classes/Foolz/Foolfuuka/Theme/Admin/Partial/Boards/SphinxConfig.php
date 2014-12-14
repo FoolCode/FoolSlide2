@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Theme\Admin\Partial\Boards;
+namespace Foolz\Foolslide\Theme\Admin\Partial\Boards;
 
 class SphinxConfig extends \Foolz\Foolframe\View\View
 {
@@ -23,7 +23,7 @@ class SphinxConfig extends \Foolz\Foolframe\View\View
 
 <textarea class="input-block-level" rows="30" id="sphinx-config">
 ###########################################
-## Sphinx Configuration File for FoolFuuka
+## Sphinx Configuration File for Foolslide
 ###########################################
 
 source main

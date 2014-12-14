@@ -1,8 +1,8 @@
 <?php
 
-namespace Foolz\Foolfuuka\Plugins\DiceRoll\Model;
+namespace Foolz\Foolslide\Plugins\DiceRoll\Model;
 
-use Foolz\Foolfuuka\Model\Comment;
+use Foolz\Foolslide\Model\Comment;
 
 class Dice
 {

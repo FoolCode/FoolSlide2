@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Foolframe\Model\Config;
 use Foolz\Foolframe\Model\DoctrineConnection;
@@ -174,8 +174,8 @@ class Media extends Model
         $this->preferences = $context->getService('preferences');
         $this->config = $context->getService('config');
         $this->uri = $context->getService('uri');
-        $this->radix_coll = $context->getService('foolfuuka.radix_collection');
-        $this->media_factory = $context->getService('foolfuuka.media_factory');
+        $this->radix_coll = $context->getService('foolslide.radix_collection');
+        $this->media_factory = $context->getService('foolslide.media_factory');
 
         if ($bulk !== null) {
             $this->setBulk($bulk);
@@ -213,7 +213,7 @@ class Media extends Model
 
             if ($this->radix->archive && $this->media->spoiler) {
                 try {
-                    $imgsize = Cache::item('foolfuuka.media.call.spoiler_size.'.$this->radix->id.'.'.$this->media->media_id.'.'.($this->op ? 'op':'reply'))->get();
+                    $imgsize = Cache::item('foolslide.media.call.spoiler_size.'.$this->radix->id.'.'.$this->media->media_id.'.'.($this->op ? 'op':'reply'))->get();
                     $this->media->preview_w = $imgsize[0];
                     $this->media->preview_h = $imgsize[1];
                 } catch (\OutOfBoundsException $e) {
@@ -221,7 +221,7 @@ class Media extends Model
                     if ($imgpath !== null) {
                         $imgsize = @getimagesize($imgpath);
 
-                        Cache::item('foolfuuka.media.call.spoiler_size.'.$this->radix->id.'.'.$this->media->media_id.'.'.($this->op ? 'op':'reply'))->set($imgsize, 86400);
+                        Cache::item('foolslide.media.call.spoiler_size.'.$this->radix->id.'.'.$this->media->media_id.'.'.($this->op ? 'op':'reply'))->set($imgsize, 86400);
 
                         if ($imgsize !== false) {
                             $this->media->preview_w = $imgsize[0];
@@ -386,7 +386,7 @@ class Media extends Model
             return null;
         }
 
-        return ($relative ? '' : $this->preferences->get('foolfuuka.boards.directory')).'/'.$this->radix->shortname.'/'
+        return ($relative ? '' : $this->preferences->get('foolslide.boards.directory')).'/'.$this->radix->shortname.'/'
             .($thumbnail ? 'thumb' : 'image').'/'.substr($image, 0, 4).'/'.substr($image, 4, 2).'/'.$image;
     }
 
@@ -399,7 +399,7 @@ class Media extends Model
      */
     public function getLink(Request $request, $thumbnail = false, $download = false)
     {
-        $before = \Foolz\Plugin\Hook::forge('Foolz\Foolfuuka\Model\Media::getLink.call.before.method.body')
+        $before = \Foolz\Plugin\Hook::forge('Foolz\Foolslide\Model\Media::getLink.call.before.method.body')
             ->setObject($this)
             ->setParams(['thumbnail' => $thumbnail])
             ->execute()
@@ -411,7 +411,7 @@ class Media extends Model
 
         $image = null;
 
-        if ($this->config->get('foolz/foolfuuka', 'config', 'media.filecheck') === true) {
+        if ($this->config->get('foolz/foolslide', 'config', 'media.filecheck') === true) {
             // locate the image
             if ($thumbnail && file_exists($this->getDir($thumbnail)) !== false) {
                 if ($this->op == 1) {
@@ -449,17 +449,17 @@ class Media extends Model
         }
 
         if ($image !== null) {
-            if ($download === true && $this->preferences->get('foolfuuka.boards.media_download_url')) {
-                return $this->preferences->get('foolfuuka.boards.media_download_url').'/'.$this->radix->shortname.'/'
+            if ($download === true && $this->preferences->get('foolslide.boards.media_download_url')) {
+                return $this->preferences->get('foolslide.boards.media_download_url').'/'.$this->radix->shortname.'/'
                 .($thumbnail ? 'thumb' : 'image').'/'.substr($image, 0, 4).'/'.substr($image, 4, 2).'/'.$image;
             }
 
-            if ($request->isSecure() && $this->preferences->get('foolfuuka.boards.media_balancers_https')) {
-                $balancers = $this->preferences->get('foolfuuka.boards.media_balancers_https');
+            if ($request->isSecure() && $this->preferences->get('foolslide.boards.media_balancers_https')) {
+                $balancers = $this->preferences->get('foolslide.boards.media_balancers_https');
             }
 
-            if (!isset($balancers) && $this->preferences->get('foolfuuka.boards.media_balancers')) {
-                $balancers = $this->preferences->get('foolfuuka.boards.media_balancers');
+            if (!isset($balancers) && $this->preferences->get('foolslide.boards.media_balancers')) {
+                $balancers = $this->preferences->get('foolslide.boards.media_balancers');
             }
 
             $media_cdn = [];
@@ -472,7 +472,7 @@ class Media extends Model
                     .($thumbnail ? 'thumb' : 'image').'/'.substr($image, 0, 4).'/'.substr($image, 4, 2).'/'.$image;
             }
 
-            return $this->preferences->get('foolfuuka.boards.url').'/'.$this->radix->shortname.'/'
+            return $this->preferences->get('foolslide.boards.url').'/'.$this->radix->shortname.'/'
                 .($thumbnail ? 'thumb' : 'image').'/'.substr($image, 0, 4).'/'.substr($image, 4, 2).'/'.$image;
         }
 
@@ -652,7 +652,7 @@ class Media extends Model
      * @param  string   $microtime  The time in microseconds to use for the local filename
      * @param  boolean  $is_op      True if the thumbnail sizes should be for OP, false if they should be for a reply
      *
-     * @return  \Foolz\Foolfuuka\Model\Media       The current object updated with the insert data
+     * @return  \Foolz\Foolslide\Model\Media       The current object updated with the insert data
      * @throws  MediaInsertInvalidFormatException  In case the media is not a valid format
      * @throws  MediaInsertDomainException         In case the media uploaded is in example too small or validations don't pass
      * @throws  MediaInsertRepostException         In case the media has been reposted too recently according to control panel settings
@@ -663,7 +663,7 @@ class Media extends Model
         $file = $this->temp_file;
         $this->op = $is_op;
 
-        $data = \Foolz\Plugin\Hook::forge('Foolz\Foolfuuka\Model\Media::insert.result.media_data')
+        $data = \Foolz\Plugin\Hook::forge('Foolz\Foolslide\Model\Media::insert.result.media_data')
             ->setParams([
                 'dimensions' => getimagesize($file->getPathname()),
                 'file' => $file,
@@ -780,7 +780,7 @@ class Media extends Model
                 mkdir($this->pathFromFilename(true, $is_op), 0777, true);
             }
 
-            $return = \Foolz\Plugin\Hook::forge('Foolz\Foolfuuka\Model\Media::insert.result.create_thumbnail')
+            $return = \Foolz\Plugin\Hook::forge('Foolz\Foolslide\Model\Media::insert.result.create_thumbnail')
                 ->setObject($this)
                 ->setParams([
                     'thumb_width' => $thumb_width,
@@ -889,7 +889,7 @@ class Media extends Model
      */
     public function p_pathFromFilename($thumbnail = false, $is_op = false, $with_filename = false)
     {
-        $dir = $this->preferences->get('foolfuuka.boards.directory').'/'.$this->radix->shortname.'/'.
+        $dir = $this->preferences->get('foolslide.boards.directory').'/'.$this->radix->shortname.'/'.
             ($thumbnail ? 'thumb' : 'image').'/';
 
         // we first check if we have media/preview_op/preview_reply available to reuse the value

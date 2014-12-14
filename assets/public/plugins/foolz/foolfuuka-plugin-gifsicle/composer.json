@@ -1,6 +1,6 @@
 {
-	"name": "foolz/foolfuuka-plugin-gifsicle",
-	"type": "foolz-foolfuuka-plugin",
+	"name": "foolz/foolslide-plugin-gifsicle",
+	"type": "foolz-foolslide-plugin",
 	"description": "Speed up animated GIF creation at cost of quality with Gifsicle",
 	"version": "1.0.0",
 	"keywords": ["gifsicle", "gif", "animated gif"],
@@ -20,6 +20,6 @@
 		"name": "Gifsicle",
 		"slug": "gifsicle",
 		"identifier": "fu",
-		"module": "foolfuuka"
+		"module": "foolslide"
 	}
 }

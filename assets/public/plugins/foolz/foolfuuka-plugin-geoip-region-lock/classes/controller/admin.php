@@ -37,7 +37,7 @@ class GeoipRegionLock extends \Foolz\Foolframe\Controller\Admin
             'help' => _i('You can add board-specific locks by browsing the board preferences.')
         ];
 
-        $form['foolfuuka.plugins.geoip_region_lock.allow_comment'] = [
+        $form['foolslide.plugins.geoip_region_lock.allow_comment'] = [
             'label' => _i('Countries allowed to post'),
             'type' => 'textarea',
             'preferences' => true,
@@ -47,7 +47,7 @@ class GeoipRegionLock extends \Foolz\Foolframe\Controller\Admin
             'help' => _i('Comma separated list of GeoIP 2-letter nation codes.') . ' ' . _i('If you allow a nation, all other nations won\'t be able to comment.'),
         ];
 
-        $form['foolfuuka.plugins.geoip_region_lock.disallow_comment'] = [
+        $form['foolslide.plugins.geoip_region_lock.disallow_comment'] = [
             'label' => _i('Countries disallowed to post'),
             'type' => 'textarea',
             'preferences' => true,
@@ -57,7 +57,7 @@ class GeoipRegionLock extends \Foolz\Foolframe\Controller\Admin
             'help' => _i('Comma separated list of GeoIP 2-letter nation codes.') . ' ' . _i('Disallowed nations won\'t be able to comment.'),
         ];
 
-        $form['foolfuuka.plugins.geoip_region_lock.allow_view'] = [
+        $form['foolslide.plugins.geoip_region_lock.allow_view'] = [
             'label' => _i('Countries allowed to view the site'),
             'type' => 'textarea',
             'preferences' => true,
@@ -67,7 +67,7 @@ class GeoipRegionLock extends \Foolz\Foolframe\Controller\Admin
             'help' => _i('Comma separated list of GeoIP 2-letter nation codes.') . ' ' . _i('If you allow a nation, all other nations won\'t be able to reach the interface.'),
         ];
 
-        $form['foolfuuka.plugins.geoip_region_lock.disallow_view'] = [
+        $form['foolslide.plugins.geoip_region_lock.disallow_view'] = [
             'label' => _i('Countries disallowed to view the site.'),
             'type' => 'textarea',
             'preferences' => true,
@@ -81,7 +81,7 @@ class GeoipRegionLock extends \Foolz\Foolframe\Controller\Admin
             'type' => 'separator'
         ];
 
-        $form['foolfuuka.plugins.geoip_region_lock.allow_logged_in'] = [
+        $form['foolslide.plugins.geoip_region_lock.allow_logged_in'] = [
             'label' => _i('Allow logged in users to post regardless.'),
             'type' => 'checkbox',
             'preferences' => true,

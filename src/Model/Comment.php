@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Foolframe\Model\Config;
 use Foolz\Foolframe\Model\DoctrineConnection;
@@ -127,11 +127,11 @@ class Comment extends Model
         $this->preferences = $context->getService('preferences');
         $this->logger = $context->getService('logger');
         $this->uri = $context->getService('uri');
-        $this->comment_factory = $context->getService('foolfuuka.comment_factory');
-        $this->media_factory = $context->getService('foolfuuka.media_factory');
-        $this->ban_factory = $context->getService('foolfuuka.ban_factory');
-        $this->radix_coll = $context->getService('foolfuuka.radix_collection');
-        $this->report_coll = $context->getService('foolfuuka.report_collection');
+        $this->comment_factory = $context->getService('foolslide.comment_factory');
+        $this->media_factory = $context->getService('foolslide.media_factory');
+        $this->ban_factory = $context->getService('foolslide.ban_factory');
+        $this->radix_coll = $context->getService('foolslide.radix_collection');
+        $this->report_coll = $context->getService('foolslide.report_collection');
 
         if ($bulk !== null) {
             $this->setBulk($bulk);
@@ -163,7 +163,7 @@ class Comment extends Model
         }
 
         if ($this->comment->poster_country !== null) {
-            $this->comment->poster_country_name = $this->config->get('foolz/foolfuuka', 'geoip_codes', 'codes.'.strtoupper($this->comment->poster_country));
+            $this->comment->poster_country_name = $this->config->get('foolz/foolslide', 'geoip_codes', 'codes.'.strtoupper($this->comment->poster_country));
         }
 
         $num = $this->comment->num.($this->comment->subnum ? ','.$this->comment->subnum : '');
@@ -316,7 +316,7 @@ class Comment extends Model
         $find = "'(\r?\n|^)(&gt;.*?)(?=$|\r?\n)'i";
         $html = '\\1<span class="greentext">\\2</span>\\3';
 
-        $html = Hook::forge('Foolz\Foolfuuka\Model\Comment::processComment.result.greentext')
+        $html = Hook::forge('Foolz\Foolslide\Model\Comment::processComment.result.greentext')
             ->setParam('html', $html)
             ->execute()
             ->get($html);
@@ -522,7 +522,7 @@ class Comment extends Model
             'attr_backlink' => 'class="backlink" data-function="highlight" data-backlink="true" data-board="' . $data->board->shortname . '" data-post="' . $current_p_num_u . '"',
         ];
 
-        $build_url = Hook::forge('Foolz\Foolfuuka\Model\Comment::processInternalLinks.result.html')
+        $build_url = Hook::forge('Foolz\Foolslide\Model\Comment::processInternalLinks.result.html')
             ->setObject($this)
             ->setParam('data', $data)
             ->setParam('build_url', $build_url)
@@ -593,7 +593,7 @@ class Comment extends Model
                 .(($data->board)?$data->board->shortname:$data->shortname).'" data-post="'.$data->query.'"'
         ];
 
-        $build_href = Hook::forge('Foolz\Foolfuuka\Model\Comment::processExternalLinks.result.html')
+        $build_href = Hook::forge('Foolz\Foolslide\Model\Comment::processExternalLinks.result.html')
             ->setObject($this)
             ->setParam('data', $data)
             ->setParam('build_href', $build_href)
@@ -840,22 +840,22 @@ class Comment extends Model
             $this->dc->getConnection()->commit();
 
             // clean up some caches
-            Cache::item('foolfuuka.model.board.getThreadComments.thread.'
+            Cache::item('foolslide.model.board.getThreadComments.thread.'
                 .md5(serialize([$this->radix->shortname, $this->comment->thread_num])))->delete();
 
             // clean up the 10 first pages of index and gallery that are cached
             for ($i = 1; $i <= 10; $i++) {
-                Cache::item('foolfuuka.model.board.getLatestComments.query.'
+                Cache::item('foolslide.model.board.getLatestComments.query.'
                     .$this->radix->shortname.'.by_post.'.$i)->delete();
 
-                Cache::item('foolfuuka.model.board.getLatestComments.query.'
+                Cache::item('foolslide.model.board.getLatestComments.query.'
                     .$this->radix->shortname.'.by_thread.'.$i)->delete();
 
-                Cache::item('foolfuuka.model.board.getThreadsComments.query.'
+                Cache::item('foolslide.model.board.getThreadsComments.query.'
                     .$this->radix->shortname.'.'.$i)->delete();
             }
         } catch (\Doctrine\DBAL\DBALException $e) {
-            $this->logger->error('\Foolz\Foolfuuka\Model\CommentInsert: '.$e->getMessage());
+            $this->logger->error('\Foolz\Foolslide\Model\CommentInsert: '.$e->getMessage());
             $this->dc->getConnection()->rollBack();
 
             throw new CommentSendingDatabaseException(_i('Something went wrong when deleting the post in the database. Try again.'));
@@ -929,6 +929,6 @@ class Comment extends Model
      */
     protected function p_processSecureTripcode($plain)
     {
-        return substr(base64_encode(sha1($plain . base64_decode($this->config->get('foolz/foolfuuka', 'config', 'comment.secure_tripcode_salt')), true)), 0, 11);
+        return substr(base64_encode(sha1($plain . base64_decode($this->config->get('foolz/foolslide', 'config', 'comment.secure_tripcode_salt')), true)), 0, 11);
     }
 }

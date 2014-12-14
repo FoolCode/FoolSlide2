@@ -1,6 +1,6 @@
 <?php
 
-namespace Foolz\Foolfuuka\Model;
+namespace Foolz\Foolslide\Model;
 
 use Foolz\Foolframe\Model\Model;
 
@@ -99,7 +99,7 @@ class Ban extends Model
     /**
      * Remove the entry for a ban (unban)
      *
-     * @return  \Foolz\Foolfuuka\Model\Ban
+     * @return  \Foolz\Foolslide\Model\Ban
      */
     public function delete()
     {
@@ -117,7 +117,7 @@ class Ban extends Model
      *
      * @param   string  $appeal  The appeal submitted by the user
      *
-     * @return  \Foolz\Foolfuuka\Model\Ban
+     * @return  \Foolz\Foolslide\Model\Ban
      */
     public function appeal($appeal)
     {
@@ -136,7 +136,7 @@ class Ban extends Model
     /**
      * Sets the flag to deny the appeal
      *
-     * @return  \Foolz\Foolfuuka\Model\Ban
+     * @return  \Foolz\Foolslide\Model\Ban
      */
     public function appealReject()
     {

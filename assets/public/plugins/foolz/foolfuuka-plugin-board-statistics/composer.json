@@ -1,6 +1,6 @@
 {
-	"name": "foolz/foolfuuka-plugin-board-statistics",
-	"type": "foolz-foolfuuka-plugin",
+	"name": "foolz/foolslide-plugin-board-statistics",
+	"type": "foolz-foolslide-plugin",
 	"description": "Statistics for the boards, to keep live with a php daemon.",
 	"version": "1.0.0",
 	"keywords": ["fake", "mock"],
@@ -19,6 +19,6 @@
 	"extra": {
 		"name": "Board Statistics",
 		"slug": "board_statistics",
-		"module": "foolfuuka"
+		"module": "foolslide"
 	}
 }
