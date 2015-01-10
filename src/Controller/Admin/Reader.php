@@ -6,6 +6,7 @@ use Foolz\Foolframe\Model\DoctrineConnection;
 use Foolz\Foolframe\Model\Validation\ActiveConstraint\Trim;
 use Foolz\Foolframe\Model\Validation\Validator;
 use Foolz\Foolslide\Model\RadixCollection;
+use Foolz\Foolslide\Model\ReleaseFactory;
 use Foolz\Foolslide\Model\SeriesFactory;
 use Foolz\Foolslide\Model\SeriesNotFoundException;
 use Foolz\Theme\Loader;
@@ -23,11 +24,17 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
      */
     protected $series_factory;
 
+    /**
+     * @var ReleaseFactory
+     */
+    protected $release_factory;
+
     public function before()
     {
         parent::before();
 
         $this->series_factory = $this->context->getService('foolslide.series_factory');
+        $this->release_factory = $this->context->getService('foolslide.release_factory');
 
         $this->param_manager->setParam('controller_title', _i('Reader'));
     }
@@ -56,7 +63,7 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
         }
 
         $this->param_manager->setParam('method_title', _i('Manage'));
-        $this->builder->createPartial('body', 'reader/manage')
+        $this->builder->createPartial('body', 'reader/manage_series')
             ->getParamManager()->setParam('series_bulk', $this->series_factory->getPaged($page));
 
         return new Response($this->builder->build());
@@ -64,7 +71,6 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
 
     public function action_add_series()
     {
-        $this->param_manager->setParam('method_title', _i('Add series'));
         $data['form'] = $this->series_factory->getStructure();
 
         if ($this->getPost() && !$this->checkCsrfToken()) {
@@ -103,7 +109,6 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
 
         $data['object'] = $series_bulk->series;
 
-        $this->param_manager->setParam('method_title', _i('Edit series'));
         $data['form'] = $this->series_factory->getStructure();
 
         if ($this->getPost() && !$this->checkCsrfToken()) {
@@ -121,7 +126,7 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
             }
         }
 
-        $this->param_manager->setParam('method_title', [_i('Add new series')]);
+        $this->param_manager->setParam('method_title', _i('Edit series'));
         $this->builder->createPartial('body', 'form_creator')
             ->getParamManager()->setParams($data);
 
@@ -144,26 +149,94 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
             $this->notices->set('warning', _i('The security token wasn\'t found. Try resubmitting.'));
         } elseif ($this->getPost()) {
             $this->series_factory->delete($id);
-            $this->notices->setFlash('success', sprintf(_i('The series %s has been deleted.'), $series_bulk->series->title));
+            $this->notices->setFlash('success', sprintf(_i('The series with ID %s has been deleted.'), $series_bulk->series->id));
             return $this->redirect('admin/reader/manage');
         }
 
         $data['alert_level'] = 'warning';
-        $data['message'] = _i('Do you really want to remove the series and all its data?');
+        $data['message'] = _i('Do you really want to remove the series with ID %s and all its data?', $series_bulk->series->id);
 
-        $this->param_manager->setParam('method_title', _i('Removing series:').' '.$series_bulk->series->title);
+        $this->param_manager->setParam('method_title', _i('Removing series with ID %s', $series_bulk->series->id));
         $this->builder->createPartial('body', 'confirm')
             ->getParamManager()->setParams($data);
 
         return new Response($this->builder->build());
     }
 
-
-
-
-    public function action_board($shortname = null)
+    public function action_manage_releases($series_id = 0)
     {
-        $data['form'] = $this->radix_coll->structure();
+        if (!$series_id || !ctype_digit((string) $series_id)) {
+            throw new NotFoundHttpException;
+        }
+
+        try {
+            $series_bulk = $this->series_factory->getById($series_id);
+        } catch (SeriesNotFoundException $e) {
+            throw new NotFoundHttpException;
+        }
+
+        $this->release_factory->fillSeriesBulk($series_bulk);
+
+        $this->param_manager->setParam('method_title', _i('Releases for series %s', $series_bulk->series->title));
+        $this->builder->createPartial('body', 'reader/manage_releases')
+            ->getParamManager()->setParam('series_bulk', $series_bulk);
+
+        return new Response($this->builder->build());
+    }
+
+    function action_add_release($series_id = 0)
+    {
+        if (!$series_id || !ctype_digit((string) $series_id)) {
+            throw new NotFoundHttpException;
+        }
+
+        try {
+            $series_bulk = $this->series_factory->getById($series_id);
+        } catch (SeriesNotFoundException $e) {
+            throw new NotFoundHttpException;
+        }
+
+        $data['object'] = ['series_id' => $series_id];
+
+        $data['form'] = $this->release_factory->getStructure();
+
+        if ($this->getPost() && !$this->checkCsrfToken()) {
+            $this->notices->set('warning', _i('The security token was not found. Please try again.'));
+        } elseif ($this->getPost()) {
+            $result = Validator::formValidate($data['form'], $this->getPost() + ['series_id' => $series_id]);
+
+            if (isset($result['error'])) {
+                $this->notices->set('warning', $result['error']);
+            } else {
+                // it's actually fully checked, we just have to throw it in DB
+                $id = $this->release_factory->save($result['success']);
+
+                return $this->redirect('admin/reader/edit_release/'.$id);
+            }
+        }
+
+        $this->param_manager->setParam('method_title', _i('Add new release to %s', $series_bulk->series->title));
+        $this->builder->createPartial('body', 'form_creator')
+            ->getParamManager()->setParams($data);
+
+        return new Response($this->builder->build());
+    }
+
+    public function action_edit_release($id = 0)
+    {
+        if (!$id || !ctype_digit((string) $id)) {
+            throw new NotFoundHttpException;
+        }
+
+        try {
+            $release_bulk = $this->release_factory->getById($id);
+        } catch (SeriesNotFoundException $e) {
+            throw new NotFoundHttpException;
+        }
+
+        $data['object'] = $release_bulk->release;
+
+        $data['form'] = $this->release_factory->getStructure();
 
         if ($this->getPost() && !$this->checkCsrfToken()) {
             $this->notices->set('warning', _i('The security token was not found. Please try again.'));
@@ -174,86 +247,43 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
                 $this->notices->set('warning', $result['error']);
             } else {
                 // it's actually fully checked, we just have to throw it in DB
-                $this->radix_coll->save($result['success']);
+                $id = $this->release_factory->save($result['success']);
 
-                if (is_null($shortname)) {
-                    $this->notices->setFlash('success', _i('New board created!'));
-                    return $this->redirect('admin/boards/board/'.$result['success']['shortname']);
-                } elseif ($shortname != $result['success']['shortname']) {
-                    // case in which letter was changed
-                    $this->notices->setFlash('success', _i('Board information updated.'));
-                    return $this->redirect('admin/boards/board/'.$result['success']['shortname']);
-                } else {
-                    $this->notices->set('success', _i('Board information updated.'));
-                }
+                return $this->redirect('admin/reader/edit_release/'.$id);
             }
         }
 
-        $board = $this->radix_coll->getByShortname($shortname);
-        if ($board === false) {
-            throw new NotFoundHttpException;
-        }
-
-        $data['object'] = (object) $board->getAllValues();
-
-        $this->param_manager->setParam('method_title', [_i('Manage'), _i('Edit'), $shortname]);
+        $this->param_manager->setParam('method_title', _i('Edit series'));
         $this->builder->createPartial('body', 'form_creator')
             ->getParamManager()->setParams($data);
 
         return new Response($this->builder->build());
     }
 
-    function action_add()
+    function action_delete_release($id = 0)
     {
-        $data['form'] = $this->radix_coll->structure();
-
-        if ($this->getPost() && !$this->checkCsrfToken()) {
-            $this->notices->set('warning', _i('The security token wasn\'t found. Try resubmitting.'));
-        } elseif ($this->getPost()) {
-            $result = Validator::formValidate($data['form'], $this->getPost());
-            if (isset($result['error'])) {
-                $this->notices->set('warning', $result['error']);
-            } else {
-                // it's actually fully checked, we just have to throw it in DB
-                $this->radix_coll->save($result['success']);
-                $this->notices->setFlash('success', _i('New board created!'));
-                return $this->redirect('admin/boards/board/'.$result['success']['shortname']);
-            }
+        if (!$id || !ctype_digit((string) $id)) {
+            throw new NotFoundHttpException;
         }
 
-        // the actual POST is in the board() function
-        $data['form']['open']['action'] = $this->uri->create('admin/boards/add_new');
-
-        // panel for creating a new board
-        $this->param_manager->setParam('method_title', [_i('Manage'), _i('Add')]);
-        $this->builder->createPartial('body', 'form_creator')
-            ->getParamManager()->setParams($data);
-
-        return new Response($this->builder->build());
-    }
-
-    function action_delete($id = 0)
-    {
-        $board = $this->radix_coll->getById($id);
-        if ($board == false) {
+        try {
+            $release_bulk = $this->release_factory->getById($id);
+        } catch (SeriesNotFoundException $e) {
             throw new NotFoundHttpException;
         }
 
         if ($this->getPost() && !$this->checkCsrfToken()) {
             $this->notices->set('warning', _i('The security token wasn\'t found. Try resubmitting.'));
         } elseif ($this->getPost()) {
-            $board->remove($id);
-            $this->notices->setFlash('success', sprintf(_i('The board %s has been deleted.'), $board->shortname));
-            return $this->redirect('admin/boards/manage');
+            $this->release_factory->delete($release_bulk->release->id);
+            $this->notices->setFlash('success', sprintf(_i('The release with ID %s has been deleted.', $release_bulk->release->id)));
+            return $this->redirect('admin/reader/manage_releases/'.$release_bulk->series->id);
         }
 
         $data['alert_level'] = 'warning';
-        $data['message'] = _i('Do you really want to remove the board and all its data?').
-            '<br/>'.
-            _i('Notice: due to its size, you will have to remove the image directory manually. The directory will have the "_removed" suffix. You can remove all the leftover "_removed" directories with the following command:').
-            ' <code>php index.php cli boards remove_leftover_dirs</code>';
+        $data['message'] = _i('Do you really want to remove the release with ID %s and all its data?', $release_bulk->release->id);
 
-        $this->param_manager->setParam('method_title', _i('Removing board:').' '.$board->shortname);
+        $this->param_manager->setParam('method_title', _i('Removing release with ID %s', $release_bulk->release->id));
         $this->builder->createPartial('body', 'confirm')
             ->getParamManager()->setParams($data);
 

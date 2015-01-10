@@ -156,7 +156,9 @@ class SeriesFactory extends Model
     {
         $dc = $this->dc;
 
-        exec('rm -rf '.escapeshellarg(DOCROOT.'foolslide/series/'.$id));
+        $series_bulk = $this->getById($id);
+
+        exec('rm -rf '.escapeshellarg(DOCROOT.'foolslide/series/'.$series_bulk->series->id));
         $dc->qb()
             ->delete($dc->p('series'))
             ->where('id = :id')

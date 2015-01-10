@@ -4,7 +4,7 @@ namespace Foolz\Foolslide\Theme\Admin\Partial\Reader;
 
 use Foolz\Foolslide\Model\SeriesBulk;
 
-class Manage extends \Foolz\Foolframe\View\View
+class ManageSeries extends \Foolz\Foolframe\View\View
 {
     public function toString()
     { ?>
@@ -37,8 +37,8 @@ class Manage extends \Foolz\Foolframe\View\View
 
                     <div class="btn-group pull-right">
 
-                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/new_release/'.$series_bulk->series->id) ?>">
-                            <?= _i('New release') ?>
+                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/add_release/'.$series_bulk->series->id) ?>">
+                            <?= _i('Add release') ?>
                         </a>
 
                         <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/manage_releases/'.$series_bulk->series->id) ?>">
