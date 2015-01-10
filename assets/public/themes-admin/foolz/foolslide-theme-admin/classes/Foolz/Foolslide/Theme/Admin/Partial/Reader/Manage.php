@@ -33,22 +33,25 @@ class Manage extends \Foolz\Foolframe\View\View
             <tr>
                 <td><?= $series_bulk->series->id ?></td>
                 <td>
-                    <a href="<?= $this->getUri()->create('admin/reader/series/'.$series_bulk->series->id) ?>"><?= e($series_bulk->series->title) ?></a>
+                    <a href="<?= $this->getUri()->create('admin/reader/edit_series/'.$series_bulk->series->id) ?>"><?= e($series_bulk->series->title) ?></a>
 
                     <div class="btn-group pull-right">
-                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/series/'.$series_bulk->series->id) ?>">
-                            <?= _i('Edit') ?>
+
+                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/new_chapter/'.$series_bulk->series->id) ?>">
+                            <?= _i('New chapter') ?>
                         </a>
 
-                        <button class="btn btn-mini btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
+                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/manage_chapters/'.$series_bulk->series->id) ?>">
+                            <?= _i('Manage chapters') ?>
+                        </a>
 
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="<?= $this->getUri()->create('admin/reader/delete_series/'.$series_bulk->series->id) ?>"><?= _i('Delete') ?></a>
-                            </li>
-                        </ul>
+                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/edit_series/'.$series_bulk->series->id) ?>">
+                            <?= _i('Edit series') ?>
+                        </a>
+
+                        <a class="btn btn-mini btn-danger" href="<?= $this->getUri()->create('admin/reader/delete_series/'.$series_bulk->series->id) ?>">
+                            <?= _i('Delete series') ?>
+                        </a>
                     </div>
                 </td>
             </tr>

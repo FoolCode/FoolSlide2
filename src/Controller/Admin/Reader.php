@@ -7,6 +7,7 @@ use Foolz\Foolframe\Model\Validation\ActiveConstraint\Trim;
 use Foolz\Foolframe\Model\Validation\Validator;
 use Foolz\Foolslide\Model\RadixCollection;
 use Foolz\Foolslide\Model\SeriesFactory;
+use Foolz\Foolslide\Model\SeriesNotFoundException;
 use Foolz\Theme\Loader;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,7 +57,7 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
 
         $this->param_manager->setParam('method_title', _i('Manage'));
         $this->builder->createPartial('body', 'reader/manage')
-            ->getParamManager()->setParam('series_bulk', $this->series_factory->getPaged());
+            ->getParamManager()->setParam('series_bulk', $this->series_factory->getPaged($page));
 
         return new Response($this->builder->build());
     }
@@ -77,12 +78,81 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
                 // it's actually fully checked, we just have to throw it in DB
                 $id = $this->series_factory->save($result['success']);
 
-                return $this->redirect('series/series/'.$id);
+                return $this->redirect('admin/reader/edit_series/'.$id);
             }
         }
 
         $this->param_manager->setParam('method_title', [_i('Add new series')]);
         $this->builder->createPartial('body', 'form_creator')
+            ->getParamManager()->setParams($data);
+
+        return new Response($this->builder->build());
+    }
+
+    public function action_edit_series($id = 0)
+    {
+        if (!$id || !ctype_digit((string) $id)) {
+            throw new NotFoundHttpException;
+        }
+
+        try {
+            $series_bulk = $this->series_factory->getById($id);
+        } catch (SeriesNotFoundException $e) {
+            throw new NotFoundHttpException;
+        }
+
+        $data['object'] = $series_bulk->series;
+
+        $this->param_manager->setParam('method_title', _i('Edit series'));
+        $data['form'] = $this->series_factory->getStructure();
+
+        if ($this->getPost() && !$this->checkCsrfToken()) {
+            $this->notices->set('warning', _i('The security token was not found. Please try again.'));
+        } elseif ($this->getPost()) {
+            $result = Validator::formValidate($data['form'], $this->getPost());
+
+            if (isset($result['error'])) {
+                $this->notices->set('warning', $result['error']);
+            } else {
+                // it's actually fully checked, we just have to throw it in DB
+                $id = $this->series_factory->save($result['success']);
+
+                return $this->redirect('admin/reader/edit_series/'.$id);
+            }
+        }
+
+        $this->param_manager->setParam('method_title', [_i('Add new series')]);
+        $this->builder->createPartial('body', 'form_creator')
+            ->getParamManager()->setParams($data);
+
+        return new Response($this->builder->build());
+    }
+
+    function action_delete_series($id = 0)
+    {
+        if (!$id || !ctype_digit((string) $id)) {
+            throw new NotFoundHttpException;
+        }
+
+        try {
+            $series_bulk = $this->series_factory->getById($id);
+        } catch (SeriesNotFoundException $e) {
+            throw new NotFoundHttpException;
+        }
+
+        if ($this->getPost() && !$this->checkCsrfToken()) {
+            $this->notices->set('warning', _i('The security token wasn\'t found. Try resubmitting.'));
+        } elseif ($this->getPost()) {
+            $this->series_factory->delete($id);
+            $this->notices->setFlash('success', sprintf(_i('The series %s has been deleted.'), $series_bulk->series->title));
+            return $this->redirect('admin/reader/manage');
+        }
+
+        $data['alert_level'] = 'warning';
+        $data['message'] = _i('Do you really want to remove the series and all its data?');
+
+        $this->param_manager->setParam('method_title', _i('Removing series:').' '.$series_bulk->series->title);
+        $this->builder->createPartial('body', 'confirm')
             ->getParamManager()->setParams($data);
 
         return new Response($this->builder->build());

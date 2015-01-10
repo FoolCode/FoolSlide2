@@ -9,6 +9,8 @@ use Foolz\Foolframe\Model\Preferences;
 use Foolz\Profiler\Profiler;
 use Symfony\Component\Validator\Constraints as Assert;
 
+class SeriesNotFoundException extends \Exception {}
+
 class SeriesFactory extends Model
 {
 
@@ -156,7 +158,7 @@ class SeriesFactory extends Model
 
         exec('rm -rf '.escapeshellarg(DOCROOT.'foolslide/series/'.$id));
         $dc->qb()
-            ->delete($dc->p('series'), 's')
+            ->delete($dc->p('series'))
             ->where('id = :id')
             ->setParameter(':id', $id)
             ->execute();
@@ -167,7 +169,8 @@ class SeriesFactory extends Model
      *
      * @param int $id The ID of a series
      *
-     * @return SeriesBulk
+     * @return SeriesBulk The bulk object with the series data object inside
+     * @throws SeriesNotFoundException If the ID doesn't correspond to a
      */
     public function getById($id)
     {
@@ -180,6 +183,10 @@ class SeriesFactory extends Model
             ->setParameter(':id', $id)
             ->execute()
             ->fetch();
+
+        if (!$result) {
+            throw new SeriesNotFoundException(_i('The series could not be found.'));
+        }
 
         $data = new SeriesData();
         $data->import($result);
@@ -197,7 +204,7 @@ class SeriesFactory extends Model
      *
      * @return SeriesBulk
      */
-    public function getPaged($page = 1, $per_page = 50, $order_by = 'title', $order_direction = 'asc')
+    public function getPaged($page = 1, $per_page = 100, $order_by = 'title', $order_direction = 'asc')
     {
         $dc = $this->dc;
 
