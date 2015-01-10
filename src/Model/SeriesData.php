@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: woxxy
- * Date: 14/12/14
- * Time: 15:10
- */
 
 namespace Foolz\Foolslide\Model;
 
@@ -18,7 +12,7 @@ class SeriesData extends Data
     public $id;
 
     /**
-     * @var
+     * @var int
      */
     public $rls_id;
 
