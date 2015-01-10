@@ -37,12 +37,12 @@ class Manage extends \Foolz\Foolframe\View\View
 
                     <div class="btn-group pull-right">
 
-                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/new_chapter/'.$series_bulk->series->id) ?>">
-                            <?= _i('New chapter') ?>
+                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/new_release/'.$series_bulk->series->id) ?>">
+                            <?= _i('New release') ?>
                         </a>
 
-                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/manage_chapters/'.$series_bulk->series->id) ?>">
-                            <?= _i('Manage chapters') ?>
+                        <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/manage_releases/'.$series_bulk->series->id) ?>">
+                            <?= _i('Manage releases') ?>
                         </a>
 
                         <a class="btn btn-mini btn-primary" href="<?= $this->getUri()->create('admin/reader/edit_series/'.$series_bulk->series->id) ?>">
