@@ -41,8 +41,22 @@ class Schema
         $releases->addColumn('created', 'datetime', ['notnull' => false, 'default' => null]);
         $releases->addColumn('updated', 'datetime', ['notnull' => false, 'default' => null]);
         $releases->setPrimaryKey(['id']);
+        $releases->addIndex(['series_id'], 'series_id_index');
         $releases->addUniqueIndex(['rls_id'], 'rls_id_index');
-        $releases->addUniqueIndex(['series_id'], 'series_id_index');
+
+        $pages = $schema->createTable($dc->p('pages'));
+        $pages->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+        $pages->addColumn('release_id', 'integer', ['unsigned' => true]);
+        $pages->addColumn('width', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $pages->addColumn('height', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $pages->addColumn('filesize', 'integer', ['unsigned' => true, 'notnull' => false, 'default' => null]);
+        $pages->addColumn('filename', 'string', ['length' => 256]);
+        $pages->addColumn('extension', 'string', ['length' => 8]);
+        $pages->addColumn('hash', 'string', ['length' => 40]);
+        $pages->addColumn('created', 'datetime', ['notnull' => false, 'default' => null]);
+        $pages->addColumn('updated', 'datetime', ['notnull' => false, 'default' => null]);
+        $releases->setPrimaryKey(['id']);
+        $releases->addIndex(['series_id'], 'series_id_index');
 
         $banned_md5 = $schema->createTable($dc->p('banned_md5'));
         $banned_md5->addColumn('md5', 'string', ['length' => 24]);

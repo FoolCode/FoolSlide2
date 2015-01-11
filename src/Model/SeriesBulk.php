@@ -10,7 +10,7 @@ class SeriesBulk implements \JsonSerializable
     public $series = null;
 
     /**
-     * @var ReleaseData[]
+     * @var ReleaseData[]|null
      */
     public $release_array = null;
 

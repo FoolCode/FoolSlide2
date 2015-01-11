@@ -268,7 +268,7 @@ class ReleaseFactory extends Model
             ->fetch();
 
         if (!$result) {
-            throw new ReleaseNotFoundException(_i('The series could not be found.'));
+            throw new ReleaseNotFoundException(_i('The release could not be found.'));
         }
 
         $series_data = $this->series_factory->getById($result['series_id'])->series;

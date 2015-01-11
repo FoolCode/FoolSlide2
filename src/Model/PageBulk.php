@@ -2,7 +2,7 @@
 
 namespace Foolz\Foolslide\Model;
 
-class ReleaseBulk implements \JsonSerializable
+class PageBulk implements \JsonSerializable
 {
     /**
      * @var SeriesData
@@ -15,22 +15,22 @@ class ReleaseBulk implements \JsonSerializable
     public $release = null;
 
     /**
-     * @var PageData[]|null
+     * @var PageData
      */
-    public $page_array = null;
+    public $page = null;
 
     /**
      * @param SeriesData $series
      * @param ReleaseData $release
-     * @param PageData[]|null $page_array
+     * @param PageData $page
      * @return SeriesBulk
      */
-    public static function forge(SeriesData $series, ReleaseData $release, $page_array = null)
+    public static function forge(SeriesData $series, ReleaseData $release, PageData $page)
     {
         $new = new static();
         $new->series = $series;
         $new->release = $release;
-        $new->page_array = $page_array;
+        $new->page = $page;
 
         return $new;
     }
@@ -42,19 +42,11 @@ class ReleaseBulk implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        $array = [
+        return [
             'series' => $this->series->export(),
-            'release'=> $this->release->export()
+            'release'=> $this->release->export(),
+            'page'=> $this->page->export()
         ];
-
-        if ($this->page_array !== null) {
-            $array['pages'] = [];
-
-            foreach ($this->page_array as $page) {
-                $array['pages'][] = $page->export();
-            }
-        }
-        return $array;
     }
 
 }
