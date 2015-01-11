@@ -6,6 +6,7 @@ use Foolz\Foolframe\Model\Config;
 use Foolz\Foolframe\Model\DoctrineConnection;
 use Foolz\Foolframe\Model\Model;
 use Foolz\Foolframe\Model\Preferences;
+use Foolz\Foolframe\Model\Util;
 use Foolz\Profiler\Profiler;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -34,6 +35,11 @@ class SeriesFactory extends Model
      */
     protected $profiler;
 
+    /**
+     * @var ReleaseFactory
+     */
+    protected $release_factory;
+
     public function __construct(\Foolz\Foolframe\Model\Context $context)
     {
         parent::__construct($context);
@@ -42,6 +48,7 @@ class SeriesFactory extends Model
         $this->preferences = $context->getService('preferences');
         $this->config = $context->getService('config');
         $this->profiler = $context->getService('profiler');
+        $this->release_factory = $context->getService('foolslide.release_factory');
     }
 
     /**
@@ -154,11 +161,33 @@ class SeriesFactory extends Model
      */
     public function delete($id)
     {
+        // this method is constructed so if any part fails,
+        // executing this function again will continue the deletion process
+
         $dc = $this->dc;
 
-        $series_bulk = $this->getById($id);
+        // delete the entire directory of the series
+        $dir = DOCROOT.'foolslide/series/'.$id;
+        if (file_exists($dir)) {
+            Util::delete_recursive($dir);
+        }
 
-        exec('rm -rf '.escapeshellarg(DOCROOT.'foolslide/series/'.$series_bulk->series->id));
+        // delete all the pages related to the series from the database
+        $dc->qb()
+            ->delete($dc->p('pages'), 'p')
+            ->join('p', $dc->p('releases'), 'r', 'p.release_id = r.id')
+            ->where('p.series_id = :series_id')
+            ->setParameter(':series_id', $id)
+            ->execute();
+
+        // delete all the releases related to the series from the database
+        $dc->qb()
+            ->delete($dc->p('releases'))
+            ->where('series_id = :series_id')
+            ->setParameter(':series_id', $id)
+            ->execute();
+
+        // delete the series from the database
         $dc->qb()
             ->delete($dc->p('series'))
             ->where('id = :id')

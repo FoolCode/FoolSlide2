@@ -6,6 +6,7 @@ use Foolz\Foolframe\Model\Config;
 use Foolz\Foolframe\Model\DoctrineConnection;
 use Foolz\Foolframe\Model\Model;
 use Foolz\Foolframe\Model\Preferences;
+use Foolz\Foolframe\Model\Util;
 use Foolz\Profiler\Profiler;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -218,12 +219,27 @@ class ReleaseFactory extends Model
      */
     public function delete($id)
     {
+        // this method is constructed so if any part fails,
+        // executing this function again will continue the deletion process
+
         $dc = $this->dc;
 
-        // will throw an exception here if it doesn't exist
+        // we can't get around fetching the series data, we need it to delete the directory
         $release_bulk = $this->getById($id);
 
-        exec('rm -rf '.escapeshellarg(DOCROOT.'foolslide/series/'.$release_bulk->series->id.'/'.$release_bulk->release->id));
+        $dir = DOCROOT.'foolslide/series/'.$release_bulk->series->id.'/'.$release_bulk->release->id;
+        if (file_exists($dir)) {
+            Util::delete_recursive($dir);
+        }
+
+        // delete all the pages related to this chapter from the database
+        $dc->qb()
+            ->delete($dc->p('pages'))
+            ->where('release_id = :release_id')
+            ->setParameter(':release_id', $id)
+            ->execute();
+
+        // delete the release from the database
         $dc->qb()
             ->delete($dc->p('releases'))
             ->where('id = :id')
