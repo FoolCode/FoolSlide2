@@ -169,7 +169,7 @@ class SeriesFactory extends Model
         // delete the entire directory of the series
         $dir = DOCROOT.'foolslide/series/'.$id;
         if (file_exists($dir)) {
-            Util::delete_recursive($dir);
+            Util::delete($dir);
         }
 
         // delete all the pages related to the series from the database

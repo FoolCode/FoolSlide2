@@ -229,7 +229,7 @@ class ReleaseFactory extends Model
 
         $dir = DOCROOT.'foolslide/series/'.$release_bulk->series->id.'/'.$release_bulk->release->id;
         if (file_exists($dir)) {
-            Util::delete_recursive($dir);
+            Util::delete($dir);
         }
 
         // delete all the pages related to this chapter from the database
