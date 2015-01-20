@@ -47,6 +47,10 @@ class Context implements ContextInterface
             ->addArgument($context);
 
         $context->getContainer()
+            ->register('foolslide.page_factory', 'Foolz\Foolslide\Model\PageFactory')
+            ->addArgument($context);
+
+        $context->getContainer()
             ->register('foolslide.radix_collection', 'Foolz\Foolslide\Model\RadixCollection')
             ->addArgument($context);
 

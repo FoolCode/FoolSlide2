@@ -65,11 +65,13 @@ class PageFactory extends Model
     }
 
     /**
+     * @param ReleaseBulk $release_bulk
      * @param UploadedFile[] $files A flat array of UploadedFile objects
      * @throws PageUploadInvalidException
+     * @throws PageUploadInvalidFormatException
      * @throws PageUploadNoFileException
      */
-    public function addFromRequest(ReleaseBulk $release_bulk, array $files) {
+    public function addFromFileArray(ReleaseBulk $release_bulk, array $files) {
         $config = Hook::forge('Foolz\Foolslide\Model\PageFactory::upload.config')
             ->setParams([
                 'ext_whitelist' => ['jpg', 'jpeg', 'gif', 'png'],
@@ -134,8 +136,10 @@ class PageFactory extends Model
         foreach ($files as $file) {
             $page_data = new PageData();
 
-            $page_data->filename = $file->getFilename();
-            $page_data->extension = $file->getExtension();
+            $page_data->release_id = $release_bulk->release->id;
+
+            $page_data->filename = $file->getClientOriginalName();
+            $page_data->extension = $file->getClientOriginalExtension();
             $page_data->filesize = $file->getSize();
 
             $imagesize = getimagesize($file->getPathname());
@@ -160,7 +164,6 @@ class PageFactory extends Model
 
             $file->move($dir, $id.'.'.$page_data->extension);
         }
-
     }
 
     /**
@@ -178,7 +181,9 @@ class PageFactory extends Model
         // we can't get around fetching the series and release data, we need it to delete the file
         $page_bulk = $this->getById($id);
 
-        $file = DOCROOT.'foolslide/series/'.$page_bulk->series->id.'/'.$page_bulk->release->id.'/'.$page_bulk->page->id;
+        $file = DOCROOT.'foolslide/series/'.$page_bulk->series->id.'/'.$page_bulk->release->id.'/'.$page_bulk->page->id
+            .$page_bulk->page->extension;
+
         if (file_exists($file)) {
             unlink($file);
         }
@@ -196,8 +201,8 @@ class PageFactory extends Model
      *
      * @param int $id The ID of a series
      *
-     * @return ReleaseBulk The bulk object with the series data object inside
-     * @throws ReleaseNotFoundException If the ID doesn't correspond to a release
+     * @return PageBulk The bulk object with the series data object inside
+     * @throws PageNotFoundException If the ID doesn't correspond to a release
      */
     public function getById($id)
     {
@@ -212,7 +217,7 @@ class PageFactory extends Model
             ->fetch();
 
         if (!$result) {
-            throw new ReleaseNotFoundException(_i('The page could not be found.'));
+            throw new PageNotFoundException(_i('The page could not be found.'));
         }
 
         $release_bulk = $this->release_factory->getById($result['release_id']);

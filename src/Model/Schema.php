@@ -55,8 +55,8 @@ class Schema
         $pages->addColumn('hash', 'string', ['length' => 40]);
         $pages->addColumn('created', 'datetime', ['notnull' => false, 'default' => null]);
         $pages->addColumn('updated', 'datetime', ['notnull' => false, 'default' => null]);
-        $releases->setPrimaryKey(['id']);
-        $releases->addIndex(['series_id'], 'series_id_index');
+        $pages->setPrimaryKey(['id']);
+        $pages->addIndex(['release_id'], 'release_id_index');
 
         $banned_md5 = $schema->createTable($dc->p('banned_md5'));
         $banned_md5->addColumn('md5', 'string', ['length' => 24]);

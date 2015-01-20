@@ -48,7 +48,6 @@ class SeriesFactory extends Model
         $this->preferences = $context->getService('preferences');
         $this->config = $context->getService('config');
         $this->profiler = $context->getService('profiler');
-        $this->release_factory = $context->getService('foolslide.release_factory');
     }
 
     /**

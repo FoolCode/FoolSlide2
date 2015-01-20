@@ -5,6 +5,8 @@ namespace Foolz\Foolslide\Controller\Admin;
 use Foolz\Foolframe\Model\DoctrineConnection;
 use Foolz\Foolframe\Model\Validation\ActiveConstraint\Trim;
 use Foolz\Foolframe\Model\Validation\Validator;
+use Foolz\Foolslide\Model\PageFactory;
+use Foolz\Foolslide\Model\PageUploadException;
 use Foolz\Foolslide\Model\RadixCollection;
 use Foolz\Foolslide\Model\ReleaseFactory;
 use Foolz\Foolslide\Model\SeriesFactory;
@@ -29,12 +31,18 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
      */
     protected $release_factory;
 
+    /**
+     * @var PageFactory
+     */
+    protected $page_factory;
+
     public function before()
     {
         parent::before();
 
         $this->series_factory = $this->context->getService('foolslide.series_factory');
         $this->release_factory = $this->context->getService('foolslide.release_factory');
+        $this->page_factory = $this->context->getService('foolslide.page_factory');
 
         $this->param_manager->setParam('controller_title', _i('Reader'));
     }
@@ -290,6 +298,46 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
         return new Response($this->builder->build());
     }
 
+    public function action_manage_pages($id = 0)
+    {
+        if (!$id || !ctype_digit((string) $id)) {
+            throw new NotFoundHttpException;
+        }
+
+        try {
+            $release_bulk = $this->release_factory->getById($id);
+        } catch (SeriesNotFoundException $e) {
+            throw new NotFoundHttpException;
+        }
+
+        if ($this->getPost() && !$this->checkCsrfToken()) {
+            $this->notices->set('warning', _i('The security token was not found. Please try again.'));
+        } elseif ($this->getPost()) {
+            var_dump($this->getRequest()->files->count());
+
+            try {
+                $this->page_factory->addFromFileArray($release_bulk, $this->getRequest()->files->all());
+            } catch (PageUploadException $e) {
+                $this->notices->set('warning', $e->getMessage());
+            }
+
+            if (isset($result['error'])) {
+                $this->notices->set('warning', $result['error']);
+            } else {
+                $this->notices->set('success', _i('The pages were uploaded successfully'));
+                return $this->redirect('admin/reader/manage_pages/'.$id);
+            }
+        }
+
+        $this->page_factory->fillReleaseBulk($release_bulk);
+
+        $this->param_manager->setParam('method_title', [_i('Manage pages')]);
+        $this->builder->createPartial('body', 'reader/manage_pages')
+            ->getParamManager()->setParam('release_bulk', $release_bulk);
+
+        return new Response($this->builder->build());
+    }
+
     function action_preferences()
     {
         /** @var DoctrineConnection $dc */
@@ -384,220 +432,4 @@ class Reader extends \Foolz\Foolframe\Controller\Admin
         return new Response($this->builder->build());
     }
 
-    function action_search()
-    {
-        $this->_views['method_title'] = _i('Search');
-
-        $form = [];
-
-        $form['open'] = [
-            'type' => 'open'
-        ];
-
-        $form['foolslide.sphinx.global'] = [
-            'type' => 'checkbox',
-            'label' => 'Global SphinxSearch',
-            'placeholder' => 'Foolslide',
-            'preferences' => true,
-            'help' => _i('Activate Sphinx globally (enables crossboard search)')
-        ];
-
-        $form['foolslide.sphinx.listen'] = [
-            'type' => 'input',
-            'label' => 'Listen (Sphinx)',
-            'preferences' => true,
-            'help' => _i('Set the address and port to your Sphinx instance.'),
-            'class' => 'span2',
-            'validation' => [new Trim(), new Assert\Length(['max' => 48])],
-            'validation_func' => function($input, $form) {
-                if (strpos($input['foolslide.sphinx.listen'], ':') === false) {
-                    return [
-                        'error_code' => 'MISSING_COLON',
-                        'error' => _i('The Sphinx listening address and port aren\'t formatted correctly.')
-                    ];
-                }
-
-                $sphinx_ip_port = explode(':', $input['foolslide.sphinx.listen']);
-
-                if (count($sphinx_ip_port) != 2) {
-                    return [
-                        'error_code' => 'WRONG_COLON_NUMBER',
-                        'error' => _i('The Sphinx listening address and port aren\'t formatted correctly.')
-                    ];
-                }
-
-                if (intval($sphinx_ip_port[1]) <= 0) {
-                    return [
-                        'error_code' => 'PORT_NOT_A_NUMBER',
-                        'error' => _i('The port specified isn\'t a valid number.')
-                    ];
-                }
-                /*
-                \Foolz\Sphinxql\Sphinxql::addConnection('default', $sphinx_ip_port[0], $sphinx_ip_port[1]);
-
-                try {
-                    \Foolz\Sphinxql\Sphinxql::connect(true);
-                } catch (\Foolz\Sphinxql\SphinxqlConnectionException $e) {
-                    return [
-                        'warning_code' => 'CONNECTION_NOT_ESTABLISHED',
-                        'warning' => _i('The Sphinx server couldn\'t be contacted at the specified address and port.')
-                    ];
-                }
-                */
-                return ['success' => true];
-            }
-        ];
-
-        $form['foolslide.sphinx.listen_mysql'] = [
-            'type' => 'input',
-            'label' => 'Listen (MySQL)',
-            'preferences' => true,
-            'validation' => [new Trim(), new Assert\Length(['max' => 48])],
-            'help' => _i('Set the address and port to your MySQL instance.'),
-            'class' => 'span2'
-        ];
-
-        $form['foolslide.sphinx.connection_flags'] = [
-            'type' => 'input',
-            'label' => 'Connection Flags (MySQL)',
-            'placeholder' => 0,
-            'preferences' => true,
-            'validation' => [new Trim()],
-            'help' => _i('Set the MySQL client connection flags to enable compression, SSL, or secure connection.'),
-            'class' => 'span2'
-        ];
-
-        $form['foolslide.sphinx.dir'] = [
-            'type' => 'input',
-            'label' => 'Working Directory',
-            'preferences' => true,
-            'help' => _i('Set the working directory to your Sphinx working directory.'),
-            'class' => 'span3',
-            'validation' => [new Trim()],
-            'validation_func' => function($input, $form) {
-                if (!file_exists($input['foolslide.sphinx.dir'])) {
-                    return [
-                        'warning_code' => 'SPHINX_WORKING_DIR_NOT_FOUND',
-                        'warning' => _i('Couldn\'t find the Sphinx working directory.')
-                    ];
-                }
-
-                return ['success' => true];
-            }
-        ];
-
-        $form['foolslide.sphinx.min_word_len'] = [
-            'type' => 'input',
-            'label' => 'Minimum Word Length',
-            'preferences' => true,
-            'help' => _i('Set the minimum word length indexed by Sphinx.'),
-            'class' => 'span1',
-            'validation' => [new Trim()]
-        ];
-
-        $form['foolslide.sphinx.mem_limit'] = [
-            'type' => 'input',
-            'label' => 'Memory Limit',
-            'preferences' => true,
-            'help' => _i('Set the memory limit for the Sphinx indexer.'),
-            'class' => 'span1'
-        ];
-
-        $form['foolslide.sphinx.max_children'] = [
-            'type' => 'input',
-            'label' => 'Max Children',
-            'placeholder' => 0,
-            'validation' => [new Trim()],
-            'preferences' => true,
-            'help' => _i('Set the maximum number of children to fork for searchd.'),
-            'class' => 'span1'
-        ];
-
-        $form['foolslide.sphinx.max_matches'] = [
-            'type' => 'input',
-            'label' => 'Max Matches',
-            'placeholder' => 5000,
-            'validation' => [new Trim()],
-            'preferences' => true,
-            'help' => _i('Set the maximum amount of matches the search daemon keeps in RAM for each index and results returned to the client.'),
-            'class' => 'span1'
-        ];
-
-        $form['foolslide.sphinx.distributed'] = [
-            'type' => 'input',
-            'label' => 'Number of Distributed Indexes',
-            'placeholder' => 0,
-            'validation' => [new Trim()],
-            'preferences' => true,
-            'help' => _i('Set the total number of distributed indexes to be created with indexer and used for searchd.'),
-            'class' => 'span1'
-        ];
-
-        $form['foolslide.sphinx.custom_message'] = [
-            'type' => 'textarea',
-            'label' => 'Custom Error Message',
-            'preferences' => true,
-            'help' => _i('Set a custom error message.'),
-            'class' => 'span6'
-        ];
-
-        $form['separator'] = [
-            'type' => 'separator'
-        ];
-
-        $form['submit'] = [
-            'type' => 'submit',
-            'value' => _i('Save'),
-            'class' => 'btn btn-primary'
-        ];
-
-        $form['close'] = [
-            'type' => 'close'
-        ];
-
-        $this->preferences->submit_auto($this->getRequest(), $form, $this->getPost());
-
-        // create the form
-        $data['form'] = $form;
-
-        $this->param_manager->setParam('method_title', _i('Preferences'));
-        $partial = $this->builder->createPartial('body', 'form_creator');
-        $partial->getParamManager()->setParams($data);
-        $built = $partial->build();
-        $partial->setBuilt($built.'<a href="'.$this->uri->create('admin/boards/sphinx_config').'" class="btn">'._i('Generate Config').'</a>');
-
-        return new Response($this->builder->build());
-    }
-
-    public function action_sphinx_config()
-    {
-        $data = [];
-
-        $mysql = $this->preferences->get('foolslide.sphinx.listen_mysql', null);
-        $data['mysql'] = [
-            'host' => $mysql === null ? '127.0.0.1' : explode(':', $mysql)[0],
-            'port' => $mysql === null ? '3306' : explode(':', $mysql)[1],
-            'flag' => $this->preferences->get('foolslide.sphinx.connection_flags', '0')
-        ];
-
-        $sphinx = $this->preferences->get('foolslide.sphinx.listen', null);
-        $data['sphinx'] = [
-            'port' => $sphinx === null ? '9306' : explode(':', $sphinx)[1],
-            'working_directory' => $this->preferences->get('foolslide.sphinx.dir', '/usr/local/sphinx'),
-            'mem_limit' => $this->preferences->get('foolslide.sphinx.mem_limit', '1024M'),
-            'min_word_len' => $this->preferences->get('foolslide.sphinx.min_word_len', 1),
-            'max_children' => $this->preferences->get('foolslide.sphinx.max_children', 0),
-            'max_matches' => $this->preferences->get('foolslide.sphinx.max_matches', 5000),
-            'distributed' => (int) $this->preferences->get('foolslide.sphinx.distributed', 0)
-        ];
-
-        $data['boards'] = $this->radix_coll->getAll();
-        $data['example'] = current($data['boards']);
-
-        $this->param_manager->setParam('method_title', [_i('Search'), 'Sphinx', _i('Configuration File'), _i('Generate')]);
-        $this->builder->createPartial('body', ($data['sphinx']['distributed'] > 1) ? 'boards/sphinx_dist_config' : 'boards/sphinx_config')
-            ->getParamManager()->setParams($data);
-
-        return new Response($this->builder->build());
-    }
 }
