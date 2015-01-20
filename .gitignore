@@ -1,8 +1,4 @@
-config/development/
-config/production/
-docs/build/
-
-vendor
+vendor/
 .idea
 .DS_Store
 ._.DS_Store
